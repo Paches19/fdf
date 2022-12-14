@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/14 13:01:59 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/14 16:15:28 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,8 @@ size_t	ft_strlen_gnl(char *s, int gnl);
 char	*ft_calloc_gnl(size_t count, size_t size);
 char	*write_line(char *line, char **save_read);
 char	**ft_split(char *s, char c);
+void	*ft_calloc(size_t count, size_t size);
+void	ft_bzero(void *s, size_t n);
+size_t	ft_strlen(const char *s);
 
 #endif

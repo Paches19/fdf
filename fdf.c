@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/14 13:49:50 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/14 16:54:38 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,64 @@ int	ft_isdigit(int c)
 	if (c < 48 || c > 57)
 		return (0);
 	return (1);
+}
+
+void	ft_bzero(void *s, size_t n)
+{
+	unsigned char	*ptr;
+	size_t			i;
+
+	ptr = (unsigned char *) s;
+	i = 0;
+	while (i < n && n > 0)
+	{
+		ptr[i] = 0;
+		++i;
+	}
+}
+
+void	*ft_calloc(size_t count, size_t size)
+{
+	void			*ptr;
+	const size_t	len = count * size;
+
+	if (!count)
+		return (malloc(0));
+	if (len / count != size)
+		return (NULL);
+	ptr = (void *) malloc(len);
+	if (!ptr)
+		return (NULL);
+	ft_bzero(ptr, len);
+	return (ptr);
+}
+
+void	ft_free_matrix_char(char **matrix)
+{
+	size_t	i;
+
+	i = -1;
+	while (matrix[++i])
+	{
+		free(matrix[i]);
+		matrix[i] = NULL;
+	}
+	free(matrix);
+}
+
+void	ft_free_matrix_long(long **matrix)
+{
+	size_t	i;
+
+	if (!matrix)
+		return ;
+	i = -1;
+	while (matrix[++i])
+	{
+		free(matrix[i]);
+		matrix[i] = NULL;
+	}
+	free(matrix);
 }
 
 int	ft_atoi(const char *str)
@@ -104,6 +162,7 @@ char	*read_map(char **argv)
 
 	fd = open(argv[1], O_RDONLY);
 	map = NULL;
+	buf = NULL;
 	while (buf || map == NULL)
 	{
 		buf = get_next_line(fd);
@@ -120,15 +179,21 @@ int	ft_size_map(long **map)
 	int	j;
 
 	size = 0;
-	if (!map)
-		return (size);
+	if (!map || !map[0])
+		return (0);
 	i = -1;
 	while (map[++i])
 	{
 		j = -1;
+		printf("size: %d\n", size);
 		while (map[i][++j] <= INT_MAX)
+		{
+			printf("%lu ", map[i][++j]);
 			++size;
+		}
+		printf("\n");	
 	}
+	printf("size: %d", size);
 	return (size);
 }
 
@@ -146,62 +211,91 @@ int	ft_num_in_row(char **row)
 	return (size);
 }
 
-void	init_new_map(long **new_map, long **map, char *row)
+void	init_new_map(long **new_map, long **map, char **row)
 {
 	int	i;
 	int	j;
+	int	k;
+	const int	size_row = ft_num_in_row(row);
 
 	i = -1;
-	while (map[++i])
-		new_map[i] = (long *) malloc(sizeof(long) * 1);
-	j = -1;
-	while (row[++j])
-		new_map[++i] = (long *) malloc(sizeof(long) * 1);
+	if (map)
+	{
+		while (map[++i])
+			new_map[i] = (long *) ft_calloc(sizeof(long) , size_row);
+	}
+	new_map[++i] = (long *) ft_calloc(sizeof(long), size_row);
 }
 
-int	**num_to_map(char **row, long **map)
+long	**num_to_map(char **row, long **map)
 {
 	int			i;
 	int			j;
+	int			k;
 	long		**new_map;
 	const int	size_map = ft_size_map(map);
 	const int	size_row = ft_num_in_row(row);
 
 	new_map = (long **) malloc(sizeof(long *) * (size_map + size_row + 1));
 	init_new_map(new_map, map, row);
+	new_map[size_map + size_row] = NULL;
 	i = -1;
-	while (map[++i])
+	if (map)
 	{
-		j = -1;
-		while (map[i][++j])
-			new_map[i][j] = map[i][j];
+		while (map[++i])
+		{
+			j = -1;
+			while (map[i][++j] <= INT_MAX)
+				new_map[i][j] = map[i][j];
+			new_map[i][j] = (long) INT_MAX + 1;
+		}
 	}
-	i = -1;
-	while (row[++i])
-		new_map[++j] = ft_atoi(row[i]);
-	map = NULL;
-	free (map);
+	k = -1;
+	j = -1;
+	while (row[++k])
+	{
+		new_map[i + 1][++j] = ft_atoi(row[k]);
+	}
+	new_map[i + 1][j] = (long) INT_MAX + 1;
+	printf("size_row: %d", size_row);
+	printf("j: %d", j);
+	ft_free_matrix_long(map);
+	ft_free_matrix_char(row);
+	return (new_map);
 }
 
-int	**build_map(char *ch_map)
+long	**build_map(char *ch_map)
 {
 	int		i;
 	int		j;
 	long	**map;
 	char	**matrix_map;
 	char	**row;
+	int r;
 
 	matrix_map = ft_split(ch_map, '\n');
 	i = -1;
 	map = NULL;
 	while (matrix_map[++i])
 	{
-		if (row)
-			free (row);
 		row = ft_split(matrix_map[++i], ' ');
+		j = -1;
+		printf("rows\n");
+		while (row[++j])
+			printf("%s ", row[j]);
+		printf("\n");
 		map = num_to_map(row, map);
+		i = -1;
+		printf("map\n");
+		while (map[++i])
+		{
+			r = -1;
+			while(map[i][++r] <= INT_MAX)
+				printf("%lu ", map[i][++r]);
+			printf("\n");
+		}
 	}
-	free (matrix_map);
+	ft_free_matrix_char(matrix_map);
 	return (map);
 }
 
@@ -212,7 +306,7 @@ void	fdf(void)
 
 int	main(int argc, char **argv)
 {
-	int		**map;
+	long		**map;
 	char	*ch_map;
 
 	if (argc != 2)
