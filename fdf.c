@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/15 13:54:11 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/15 16:42:03 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,17 @@ int	ft_isdigit(int c)
 	if (c < 48 || c > 57)
 		return (0);
 	return (1);
+}
+
+void	exit_error_hexa(void)
+{
+	int	err;
+
+	err = errno;
+	perror("Codigo de color introducido no válido\n");
+	perror("El formato para una altura con color es:\n");
+	perror("altura,codigo -> 0,0xFFFFFF\n");
+	exit(err);
 }
 
 void	ft_bzero(void *s, size_t n)
@@ -239,11 +250,52 @@ void	init_new_map(t_map **new_map, t_map **map, char **row)
 	}
 }
 
+void	check_colour(char *colour)
+{
+	int	i;
+
+	if (colour[0] != '0' || colour[1] != 'x')
+		exit_error_hexa();
+	i = 1;
+	while (colour[++i])
+	{
+		if (colour[i] < '0' || (colour[i] > '9' && colour[i] < 'A'))
+			exit_error_hexa();
+		if ((colour[i] > 'F' && colour[i] < 'a') || colour[i] > 'f')
+			exit_error_hexa();
+	}	
+}
+
+long int	ft_htol(char *colour)
+{
+	int			i;
+	int			base;
+	long int	result;
+	
+	check_colour(colour);
+	i = 7;
+	result = 0;
+	base = 1;
+	while (i > 1)
+	{
+		if (ft_isdigit(colour[i]))
+			result += (colour[i] - '0') * base;
+		else if (colour[i] >= 'a' && colour[i] <= 'f')
+			result += (colour[i] - 87) * base;
+		else if (colour[i] >= 'A' && colour[i] <= 'F')
+			result += (colour[i] - 55) * base;
+		base *= 16;
+		--i;
+	}
+	return (result);
+}
+
 void	get_num_colour(char **row, t_map **map, t_map **new_map)
 {
 	int			i;
 	int			j;
 	int			k;
+	char		**height_colour;
 	static int	count = 0;
 
 	i = -1;
@@ -255,14 +307,21 @@ void	get_num_colour(char **row, t_map **map, t_map **new_map)
 			while (map[i][++j].height <= INT_MAX)
 				new_map[i][j].height = map[i][j].height;
 			new_map[i][j].height = (long) INT_MAX + 1;
+			j = -1;
+			while (map[i][++j].colour <= INT_MAX)
+				new_map[i][j].colour = map[i][j].colour;
+			new_map[i][j].colour = (long) INT_MAX + 1;
 		}
 		--i;
 	}
-	k = -1;
-	j = -1;
-	while (row[++k])
-		new_map[i + 1][++j].height = (long) ft_atoi(row[k]);
-	new_map[i + 1][++j].height = (long) INT_MAX + 1;
+	while (row[++j])
+	{
+		height_colour = ft_split(row[j], ',');
+		new_map[i + 1][j].height = (long) ft_atoi(height_colour[0]);
+		new_map[i + 1][j].colour = (long) ft_htol(height_colour[1]);
+	}
+	new_map[i + 1][j].height = (long) INT_MAX + 1;
+	new_map[i + 1][j].colour = (long) INT_MAX + 1;
 	// i = -1;
 	// while (new_map[0][++i])
 	// {
@@ -285,14 +344,6 @@ t_map	**num_to_map(char **row, t_map **map)
 		exit_error();
 	init_new_map(new_map, map, row);
 	get_num_colour(row, map, new_map);
-	// int i = -1;
-	// while (new_map[++i])
-	// {
-	// 	int j = -1;
-	// 	while (new_map[i][++j].height <= INT_MAX)
-	// 		printf("%lu ", new_map[i][j].height);
-	// 	printf("\n");
-	// }
 	ft_free_matrix_long(map);
 	ft_free_matrix_char(row);
 	return (new_map);
