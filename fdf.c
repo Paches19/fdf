@@ -6,11 +6,20 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/14 16:54:38 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/15 13:54:11 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+
+void	exit_error(void)
+{
+	int	err;
+
+	err = errno;
+	perror(strerror(err));
+	exit(err);
+}
 
 int	ft_isdigit(int c)
 {
@@ -62,7 +71,7 @@ void	ft_free_matrix_char(char **matrix)
 	free(matrix);
 }
 
-void	ft_free_matrix_long(long **matrix)
+void	ft_free_matrix_long(t_map **matrix)
 {
 	size_t	i;
 
@@ -172,7 +181,7 @@ char	*read_map(char **argv)
 	return (map);
 }
 
-int	ft_size_map(long **map)
+int	ft_size_map(t_map **map)
 {
 	int	size;
 	int	i;
@@ -183,17 +192,7 @@ int	ft_size_map(long **map)
 		return (0);
 	i = -1;
 	while (map[++i])
-	{
-		j = -1;
-		printf("size: %d\n", size);
-		while (map[i][++j] <= INT_MAX)
-		{
-			printf("%lu ", map[i][++j]);
-			++size;
-		}
-		printf("\n");	
-	}
-	printf("size: %d", size);
+		++size;
 	return (size);
 }
 
@@ -211,89 +210,117 @@ int	ft_num_in_row(char **row)
 	return (size);
 }
 
-void	init_new_map(long **new_map, long **map, char **row)
+void	init_new_map(t_map **new_map, t_map **map, char **row)
 {
-	int	i;
-	int	j;
-	int	k;
+	int			i;
+	int			j;
+	int			k;
 	const int	size_row = ft_num_in_row(row);
 
 	i = -1;
 	if (map)
 	{
 		while (map[++i])
-			new_map[i] = (long *) ft_calloc(sizeof(long) , size_row);
+		{
+			new_map[i] = (t_map *) ft_calloc(sizeof(t_map) , size_row + 1);
+			if (!new_map[i])
+			{
+				ft_free_matrix_long(new_map);
+				exit_error();
+			}
+		}
+		--i;
 	}
-	new_map[++i] = (long *) ft_calloc(sizeof(long), size_row);
+	new_map[++i] = (t_map *) ft_calloc(sizeof(t_map), size_row + 1);
+	if (!new_map[i])
+	{
+		ft_free_matrix_long(new_map);
+		exit_error();
+	}
 }
 
-long	**num_to_map(char **row, long **map)
+void	get_num_colour(char **row, t_map **map, t_map **new_map)
 {
 	int			i;
 	int			j;
 	int			k;
-	long		**new_map;
-	const int	size_map = ft_size_map(map);
-	const int	size_row = ft_num_in_row(row);
+	static int	count = 0;
 
-	new_map = (long **) malloc(sizeof(long *) * (size_map + size_row + 1));
-	init_new_map(new_map, map, row);
-	new_map[size_map + size_row] = NULL;
 	i = -1;
 	if (map)
 	{
 		while (map[++i])
 		{
 			j = -1;
-			while (map[i][++j] <= INT_MAX)
-				new_map[i][j] = map[i][j];
-			new_map[i][j] = (long) INT_MAX + 1;
+			while (map[i][++j].height <= INT_MAX)
+				new_map[i][j].height = map[i][j].height;
+			new_map[i][j].height = (long) INT_MAX + 1;
 		}
+		--i;
 	}
 	k = -1;
 	j = -1;
 	while (row[++k])
-	{
-		new_map[i + 1][++j] = ft_atoi(row[k]);
-	}
-	new_map[i + 1][j] = (long) INT_MAX + 1;
-	printf("size_row: %d", size_row);
-	printf("j: %d", j);
+		new_map[i + 1][++j].height = (long) ft_atoi(row[k]);
+	new_map[i + 1][++j].height = (long) INT_MAX + 1;
+	// i = -1;
+	// while (new_map[0][++i])
+	// {
+	// 	j = -1;
+	// 	while (new_map[0][i][++j].height <= INT_MAX)
+	// 		printf("%lu ", new_map[0][i][j].height);
+	// 	printf("\n");
+	// }
+}
+
+t_map	**num_to_map(char **row, t_map **map)
+{
+	t_map		**new_map;
+	const int	size_map = ft_size_map(map);
+	const int	size_row = ft_num_in_row(row);
+
+	new_map = (t_map **) malloc(sizeof(t_map *) * (size_map + 1 + 1));
+	new_map[size_map + 1] = NULL;
+	if (!new_map)
+		exit_error();
+	init_new_map(new_map, map, row);
+	get_num_colour(row, map, new_map);
+	// int i = -1;
+	// while (new_map[++i])
+	// {
+	// 	int j = -1;
+	// 	while (new_map[i][++j].height <= INT_MAX)
+	// 		printf("%lu ", new_map[i][j].height);
+	// 	printf("\n");
+	// }
 	ft_free_matrix_long(map);
 	ft_free_matrix_char(row);
 	return (new_map);
 }
 
-long	**build_map(char *ch_map)
+t_map	**build_map(char *ch_map)
 {
 	int		i;
 	int		j;
-	long	**map;
+	t_map	**map;
 	char	**matrix_map;
 	char	**row;
-	int r;
 
 	matrix_map = ft_split(ch_map, '\n');
 	i = -1;
 	map = NULL;
 	while (matrix_map[++i])
 	{
-		row = ft_split(matrix_map[++i], ' ');
-		j = -1;
-		printf("rows\n");
-		while (row[++j])
-			printf("%s ", row[j]);
-		printf("\n");
+		row = ft_split(matrix_map[i], ' ');
 		map = num_to_map(row, map);
-		i = -1;
-		printf("map\n");
-		while (map[++i])
-		{
-			r = -1;
-			while(map[i][++r] <= INT_MAX)
-				printf("%lu ", map[i][++r]);
-			printf("\n");
-		}
+	}
+	i = -1;
+	while (map[++i])
+	{
+		j = -1;
+		while (map[i][++j].height <= INT_MAX)
+			printf("%lu ", map[i][j].height);
+		printf("\n");
 	}
 	ft_free_matrix_char(matrix_map);
 	return (map);
@@ -306,9 +333,10 @@ void	fdf(void)
 
 int	main(int argc, char **argv)
 {
-	long		**map;
+	t_map	**map;
 	char	*ch_map;
 
+	//system("leaks -q a.out");
 	if (argc != 2)
 		return (1);
 	ch_map = read_map(argv);

@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/14 16:15:28 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/15 13:40:13 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 # include "fcntl.h"
 # include "stdio.h"
 # include "limits.h"
+# include "errno.h"
+# include <string.h>
+# include <sys/wait.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
@@ -30,6 +33,12 @@
 #  undef BUFFER_SIZE
 #  define BUFFER_SIZE 1000000
 # endif
+
+typedef struct s_map
+{
+	long			height;
+	long int	colour;
+}					t_map;
 
 char	*get_next_line(int fd);
 char	*ft_strjoin_gnl(char *line, char **save_read);
