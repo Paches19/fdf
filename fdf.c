@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/15 16:42:03 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/16 12:58:45 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,10 @@ void	ft_free_matrix_char(char **matrix)
 		matrix[i] = NULL;
 	}
 	free(matrix);
+	matrix = NULL;
 }
 
-void	ft_free_matrix_long(t_map **matrix)
+void	ft_free_matrix_tmap(t_map **matrix)
 {
 	size_t	i;
 
@@ -95,6 +96,7 @@ void	ft_free_matrix_long(t_map **matrix)
 		matrix[i] = NULL;
 	}
 	free(matrix);
+	matrix = NULL;
 }
 
 int	ft_atoi(const char *str)
@@ -148,7 +150,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		return (s1);
 	str = (char *) malloc(sizeof(char) * (len_s1 + ft_strlen(s2) + 1));
 	if (!str)
-		return (NULL);
+		exit_error();
 	if (s1)
 	{
 		i = -1;
@@ -182,7 +184,6 @@ char	*read_map(char **argv)
 
 	fd = open(argv[1], O_RDONLY);
 	map = NULL;
-	buf = NULL;
 	while (buf || map == NULL)
 	{
 		buf = get_next_line(fd);
@@ -236,7 +237,7 @@ void	init_new_map(t_map **new_map, t_map **map, char **row)
 			new_map[i] = (t_map *) ft_calloc(sizeof(t_map) , size_row + 1);
 			if (!new_map[i])
 			{
-				ft_free_matrix_long(new_map);
+				ft_free_matrix_tmap(new_map);
 				exit_error();
 			}
 		}
@@ -245,7 +246,7 @@ void	init_new_map(t_map **new_map, t_map **map, char **row)
 	new_map[++i] = (t_map *) ft_calloc(sizeof(t_map), size_row + 1);
 	if (!new_map[i])
 	{
-		ft_free_matrix_long(new_map);
+		ft_free_matrix_tmap(new_map);
 		exit_error();
 	}
 }
@@ -254,6 +255,8 @@ void	check_colour(char *colour)
 {
 	int	i;
 
+	if (!colour)
+		return ;
 	if (colour[0] != '0' || colour[1] != 'x')
 		exit_error_hexa();
 	i = 1;
@@ -272,6 +275,8 @@ long int	ft_htol(char *colour)
 	int			base;
 	long int	result;
 	
+	if (!colour)
+		return (0xFFFFFF);
 	check_colour(colour);
 	i = 7;
 	result = 0;
@@ -314,11 +319,13 @@ void	get_num_colour(char **row, t_map **map, t_map **new_map)
 		}
 		--i;
 	}
+	j = -1;
 	while (row[++j])
 	{
 		height_colour = ft_split(row[j], ',');
 		new_map[i + 1][j].height = (long) ft_atoi(height_colour[0]);
 		new_map[i + 1][j].colour = (long) ft_htol(height_colour[1]);
+		ft_free_matrix_char(height_colour);
 	}
 	new_map[i + 1][j].height = (long) INT_MAX + 1;
 	new_map[i + 1][j].colour = (long) INT_MAX + 1;
@@ -344,8 +351,7 @@ t_map	**num_to_map(char **row, t_map **map)
 		exit_error();
 	init_new_map(new_map, map, row);
 	get_num_colour(row, map, new_map);
-	ft_free_matrix_long(map);
-	ft_free_matrix_char(row);
+	ft_free_matrix_tmap(map);
 	return (new_map);
 }
 
@@ -364,6 +370,7 @@ t_map	**build_map(char *ch_map)
 	{
 		row = ft_split(matrix_map[i], ' ');
 		map = num_to_map(row, map);
+		ft_free_matrix_char(row);
 	}
 	i = -1;
 	while (map[++i])
@@ -371,6 +378,14 @@ t_map	**build_map(char *ch_map)
 		j = -1;
 		while (map[i][++j].height <= INT_MAX)
 			printf("%lu ", map[i][j].height);
+		printf("\n");
+	}
+	i = -1;
+	while (map[++i])
+	{
+		j = -1;
+		while (map[i][++j].colour <= INT_MAX)
+			printf("%lu ", map[i][j].colour);
 		printf("\n");
 	}
 	ft_free_matrix_char(matrix_map);
@@ -392,6 +407,8 @@ int	main(int argc, char **argv)
 		return (1);
 	ch_map = read_map(argv);
 	map = build_map(ch_map);
+	free (ch_map);
 	fdf();
+	ft_free_matrix_tmap(map);
 	return (0);
 }
