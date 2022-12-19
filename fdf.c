@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/16 12:58:45 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/19 10:54:51 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,18 +273,19 @@ long int	ft_htol(char *colour)
 {
 	int			i;
 	int			base;
+	const char	*c = "0xFFFFFF";
 	long int	result;
 	
 	if (!colour)
-		return (0xFFFFFF);
+		colour = (char *) c;
 	check_colour(colour);
-	i = 7;
+	i = ft_strlen(colour) - 1;
 	result = 0;
 	base = 1;
 	while (i > 1)
 	{
 		if (ft_isdigit(colour[i]))
-			result += (colour[i] - '0') * base;
+			result += (colour[i] - 48) * base;
 		else if (colour[i] >= 'a' && colour[i] <= 'f')
 			result += (colour[i] - 87) * base;
 		else if (colour[i] >= 'A' && colour[i] <= 'F')
@@ -329,14 +330,6 @@ void	get_num_colour(char **row, t_map **map, t_map **new_map)
 	}
 	new_map[i + 1][j].height = (long) INT_MAX + 1;
 	new_map[i + 1][j].colour = (long) INT_MAX + 1;
-	// i = -1;
-	// while (new_map[0][++i])
-	// {
-	// 	j = -1;
-	// 	while (new_map[0][i][++j].height <= INT_MAX)
-	// 		printf("%lu ", new_map[0][i][j].height);
-	// 	printf("\n");
-	// }
 }
 
 t_map	**num_to_map(char **row, t_map **map)

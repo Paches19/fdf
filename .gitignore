@@ -6,3 +6,4 @@
 a.out
 main.c
 *.fdf
+a.out.dSYM
