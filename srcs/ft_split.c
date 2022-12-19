@@ -6,11 +6,11 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 12:54:45 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/16 11:29:45 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/19 11:45:33 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
+#include "../includes/fdf.h"
 
 static char	*ft_substr(char const *s, unsigned int start, size_t len)
 {

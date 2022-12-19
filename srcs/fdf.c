@@ -6,11 +6,11 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/19 10:54:51 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/19 14:53:40 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
+#include "../includes/fdf.h"
 
 void	exit_error(void)
 {
@@ -128,6 +128,51 @@ int	ft_atoi(const char *str)
 	return (result);
 }
 
+void	check_color(char *color)
+{
+	int	i;
+
+	if (!color)
+		return ;
+	if (color[0] != '0' || color[1] != 'x')
+		exit_error_hexa();
+	i = 1;
+	while (color[++i])
+	{
+		if (color[i] < '0' || (color[i] > '9' && color[i] < 'A'))
+			exit_error_hexa();
+		if ((color[i] > 'F' && color[i] < 'a') || color[i] > 'f')
+			exit_error_hexa();
+	}	
+}
+
+long int	ft_htol(char *color)
+{
+	int			i;
+	int			base;
+	const char	*c = "0xFFFFFF";
+	long int	result;
+	
+	if (!color)
+		color = (char *) c;
+	check_color(color);
+	i = ft_strlen(color) - 1;
+	result = 0;
+	base = 1;
+	while (i > 1)
+	{
+		if (ft_isdigit(color[i]))
+			result += (color[i] - 48) * base;
+		else if (color[i] >= 'a' && color[i] <= 'f')
+			result += (color[i] - 87) * base;
+		else if (color[i] >= 'A' && color[i] <= 'F')
+			result += (color[i] - 55) * base;
+		base *= 16;
+		--i;
+	}
+	return (result);
+}
+
 size_t	ft_strlen(const char *s)
 {
 	size_t	i;
@@ -166,24 +211,24 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (str);
 }
 
-int	get_size_map(char **argv)
-{
-	int	i;
+// int	get_size_map(char **argv)
+// {
+// 	int	i;
 
-	i = -1;
-	return (i);
-}
+// 	i = -1;
+// 	return (i);
+// }
 
 char	*read_map(char **argv)
 {
-	int			i;
 	int			fd;
 	char		*buf;
 	char		*map;
-	const int	size_map = get_size_map(argv);
+	//const int	size_map = get_size_map(argv);
 
 	fd = open(argv[1], O_RDONLY);
 	map = NULL;
+	buf = NULL;
 	while (buf || map == NULL)
 	{
 		buf = get_next_line(fd);
@@ -197,7 +242,6 @@ int	ft_size_map(t_map **map)
 {
 	int	size;
 	int	i;
-	int	j;
 
 	size = 0;
 	if (!map || !map[0])
@@ -225,8 +269,6 @@ int	ft_num_in_row(char **row)
 void	init_new_map(t_map **new_map, t_map **map, char **row)
 {
 	int			i;
-	int			j;
-	int			k;
 	const int	size_row = ft_num_in_row(row);
 
 	i = -1;
@@ -251,58 +293,11 @@ void	init_new_map(t_map **new_map, t_map **map, char **row)
 	}
 }
 
-void	check_colour(char *colour)
-{
-	int	i;
-
-	if (!colour)
-		return ;
-	if (colour[0] != '0' || colour[1] != 'x')
-		exit_error_hexa();
-	i = 1;
-	while (colour[++i])
-	{
-		if (colour[i] < '0' || (colour[i] > '9' && colour[i] < 'A'))
-			exit_error_hexa();
-		if ((colour[i] > 'F' && colour[i] < 'a') || colour[i] > 'f')
-			exit_error_hexa();
-	}	
-}
-
-long int	ft_htol(char *colour)
-{
-	int			i;
-	int			base;
-	const char	*c = "0xFFFFFF";
-	long int	result;
-	
-	if (!colour)
-		colour = (char *) c;
-	check_colour(colour);
-	i = ft_strlen(colour) - 1;
-	result = 0;
-	base = 1;
-	while (i > 1)
-	{
-		if (ft_isdigit(colour[i]))
-			result += (colour[i] - 48) * base;
-		else if (colour[i] >= 'a' && colour[i] <= 'f')
-			result += (colour[i] - 87) * base;
-		else if (colour[i] >= 'A' && colour[i] <= 'F')
-			result += (colour[i] - 55) * base;
-		base *= 16;
-		--i;
-	}
-	return (result);
-}
-
-void	get_num_colour(char **row, t_map **map, t_map **new_map)
+void	get_num_color(char **row, t_map **map, t_map **new_map)
 {
 	int			i;
 	int			j;
-	int			k;
-	char		**height_colour;
-	static int	count = 0;
+	char		**height_color;
 
 	i = -1;
 	if (map)
@@ -313,37 +308,35 @@ void	get_num_colour(char **row, t_map **map, t_map **new_map)
 			while (map[i][++j].height <= INT_MAX)
 				new_map[i][j].height = map[i][j].height;
 			new_map[i][j].height = (long) INT_MAX + 1;
-			j = -1;
-			while (map[i][++j].colour <= INT_MAX)
-				new_map[i][j].colour = map[i][j].colour;
-			new_map[i][j].colour = (long) INT_MAX + 1;
+			while (--j >= 0)
+				new_map[i][j].color = map[i][j].color;
 		}
 		--i;
 	}
 	j = -1;
 	while (row[++j])
 	{
-		height_colour = ft_split(row[j], ',');
-		new_map[i + 1][j].height = (long) ft_atoi(height_colour[0]);
-		new_map[i + 1][j].colour = (long) ft_htol(height_colour[1]);
-		ft_free_matrix_char(height_colour);
+		height_color = ft_split(row[j], ',');
+		new_map[i + 1][j].height = (long) ft_atoi(height_color[0]);
+		new_map[i + 1][j].color = (long) ft_htol(height_color[1]);
+		ft_free_matrix_char(height_color);
 	}
 	new_map[i + 1][j].height = (long) INT_MAX + 1;
-	new_map[i + 1][j].colour = (long) INT_MAX + 1;
+	new_map[i + 1][j].color = (long) INT_MAX + 1;
 }
 
 t_map	**num_to_map(char **row, t_map **map)
 {
 	t_map		**new_map;
 	const int	size_map = ft_size_map(map);
-	const int	size_row = ft_num_in_row(row);
+	//const int	size_row = ft_num_in_row(row);
 
 	new_map = (t_map **) malloc(sizeof(t_map *) * (size_map + 1 + 1));
 	new_map[size_map + 1] = NULL;
 	if (!new_map)
 		exit_error();
 	init_new_map(new_map, map, row);
-	get_num_colour(row, map, new_map);
+	get_num_color(row, map, new_map);
 	ft_free_matrix_tmap(map);
 	return (new_map);
 }
@@ -376,9 +369,10 @@ t_map	**build_map(char *ch_map)
 	i = -1;
 	while (map[++i])
 	{
+		int r = j;
 		j = -1;
-		while (map[i][++j].colour <= INT_MAX)
-			printf("%lu ", map[i][j].colour);
+		while (++j < r)
+			printf("%lu ", map[i][j].color);
 		printf("\n");
 	}
 	ft_free_matrix_char(matrix_map);
@@ -387,6 +381,28 @@ t_map	**build_map(char *ch_map)
 
 void	fdf(void)
 {
+	void	*mlx_con;
+	void	*mlx_win;
+	int		x;
+	int		y;
+	int		color;
+	char	*string = "<3";
+
+	mlx_con = mlx_init();
+	if (!mlx_con)
+		exit_error();
+	mlx_win = mlx_new_window(mlx_con, 100, 100, "FDF");
+	if (!mlx_win)
+		exit_error();
+	x = 0;
+	y = 10;
+	color = 0xFFFFFF;
+	while (x++ < 10)
+		mlx_pixel_put(mlx_con, mlx_win, x, y, color);
+	mlx_string_put (mlx_con, mlx_win, x, y, color, string);
+	mlx_loop(mlx_con);
+	free(mlx_con);
+	free(mlx_win);
 	return ;
 }
 

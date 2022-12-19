@@ -6,15 +6,14 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:53:24 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/14 12:19:00 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/19 11:47:56 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fdf.h"
+#include "../includes/fdf.h"
 
 char	*write_line(char *line, char **save_read)
 {
-	char			*str;
 	int				j;
 	const size_t	len_line = ft_strlen_gnl(line, 0);
 
