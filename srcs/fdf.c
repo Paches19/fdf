@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/19 14:53:40 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/19 15:59:06 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -379,27 +379,35 @@ t_map	**build_map(char *ch_map)
 	return (map);
 }
 
-void	fdf(void)
+void	fdf(t_map **map)
 {
 	void	*mlx_con;
 	void	*mlx_win;
 	int		x;
 	int		y;
-	int		color;
-	char	*string = "<3";
+	int		i;
+	int		j;
 
 	mlx_con = mlx_init();
 	if (!mlx_con)
 		exit_error();
-	mlx_win = mlx_new_window(mlx_con, 100, 100, "FDF");
+	mlx_win = mlx_new_window(mlx_con, 1000, 1000, "FDF");
 	if (!mlx_win)
 		exit_error();
-	x = 0;
-	y = 10;
-	color = 0xFFFFFF;
-	while (x++ < 10)
-		mlx_pixel_put(mlx_con, mlx_win, x, y, color);
-	mlx_string_put (mlx_con, mlx_win, x, y, color, string);
+	if (map)
+	{
+		i = -1;
+		y = 400;
+		while(map[++i])
+		{
+			j = -1;
+			x = 400;
+			while(map[i][++j].height <= INT_MAX)
+				mlx_pixel_put(mlx_con, mlx_win, ++x, y, map[i][j].color);
+			++y;
+		}
+		
+	}
 	mlx_loop(mlx_con);
 	free(mlx_con);
 	free(mlx_win);
@@ -417,7 +425,7 @@ int	main(int argc, char **argv)
 	ch_map = read_map(argv);
 	map = build_map(ch_map);
 	free (ch_map);
-	fdf();
+	fdf(map);
 	ft_free_matrix_tmap(map);
 	return (0);
 }
