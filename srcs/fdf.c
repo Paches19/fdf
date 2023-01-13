@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/19 15:59:06 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/01/13 11:53:11 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,45 +238,59 @@ char	*read_map(char **argv)
 	return (map);
 }
 
-int	ft_size_map(t_map **map)
+int	ft_num_rows(t_map **map)
 {
-	int	size;
+	int	num_rows;
 	int	i;
 
-	size = 0;
+	num_rows = 0;
 	if (!map || !map[0])
 		return (0);
 	i = -1;
 	while (map[++i])
-		++size;
-	return (size);
+		++num_rows;
+	return (num_rows);
 }
 
-int	ft_num_in_row(char **row)
+int	ft_num_cols(t_map **map)
+{
+	int	num_cols;
+	int	i;
+
+	num_cols = 0;
+	if (!map || !map[0])
+		return (0);
+	i = -1;
+	while (map[0][++i] <= INT_MAX)
+		++num_cols;
+	return (num_cols);
+}
+
+int	ft_size_row(char **row)
 {
 	int	i;
-	int	size;
+	int	size_row;
 
-	size = 0;
+	size_row = 0;
 	if (!row || !row[0])
-		return (size);
+		return (size_row);
 	i = -1;
 	while (row[++i])
-		++size;
-	return (size);
+		++size_row;
+	return (size_row);
 }
 
 void	init_new_map(t_map **new_map, t_map **map, char **row)
 {
 	int			i;
-	const int	size_row = ft_num_in_row(row);
+	const int	num_cols = ft_size_row(row);
 
 	i = -1;
 	if (map)
 	{
 		while (map[++i])
 		{
-			new_map[i] = (t_map *) ft_calloc(sizeof(t_map) , size_row + 1);
+			new_map[i] = (t_map *) ft_calloc(sizeof(t_map) , num_cols + 1);
 			if (!new_map[i])
 			{
 				ft_free_matrix_tmap(new_map);
@@ -285,7 +299,7 @@ void	init_new_map(t_map **new_map, t_map **map, char **row)
 		}
 		--i;
 	}
-	new_map[++i] = (t_map *) ft_calloc(sizeof(t_map), size_row + 1);
+	new_map[++i] = (t_map *) ft_calloc(sizeof(t_map), num_cols + 1);
 	if (!new_map[i])
 	{
 		ft_free_matrix_tmap(new_map);
@@ -328,11 +342,11 @@ void	get_num_color(char **row, t_map **map, t_map **new_map)
 t_map	**num_to_map(char **row, t_map **map)
 {
 	t_map		**new_map;
-	const int	size_map = ft_size_map(map);
-	//const int	size_row = ft_num_in_row(row);
+	const int	num_rows = ft_num_rows(map);
+	//const int	size_row = ft_size_row(row);
 
-	new_map = (t_map **) malloc(sizeof(t_map *) * (size_map + 1 + 1));
-	new_map[size_map + 1] = NULL;
+	new_map = (t_map **) malloc(sizeof(t_map *) * (num_rows + 1 + 1));
+	new_map[num_rows + 1] = NULL;
 	if (!new_map)
 		exit_error();
 	init_new_map(new_map, map, row);
@@ -379,6 +393,52 @@ t_map	**build_map(char *ch_map)
 	return (map);
 }
 
+t_map_proj	**init_new_map_proj(t_map **map, int num_rows, int num_cols)
+{
+	t_map_proj	**map_proj;
+	int			i;
+
+	map_proj = (t_map **) malloc(sizeof(t_map *) * (num_rows + 1));
+	map_proj[num_rows + 1] = NULL;
+	i = -1;
+	while (map[++i])
+	{
+		map_proj[i] = (t_map *) ft_calloc(sizeof(t_map) , num_cols + 1);
+		if (!map_proj[i])
+		{
+			ft_free_matrix_tmap(map_proj);
+			exit_error();
+		}
+	}
+	if (!map_proj[i])
+	{
+		ft_free_matrix_tmap(map_proj);
+		exit_error();
+	}
+	return (map_proj);
+}
+
+void	project_map(t_map **map, int scale)
+{
+	t_map_proj	**map_proj;
+	int			i;
+	int			j;
+	const int	num_rows = ft_num_rows(map);
+	const int	num_cols = ft_num_cols(map);
+
+	map_proj = init_new_map_proj(map);
+	i = -1;
+	while (++i < num_rows)
+	{
+		j = -1;
+		while (++j < num_cols)
+		{
+			map_proj[i][j].x = (i - j) * cos(0.523599) * scale;
+			map_proj[i][j].y = ((i - j) * sin(0.523599) - map[i][j]) * scale;
+		}
+	}
+}
+
 void	fdf(t_map **map)
 {
 	void	*mlx_con;
@@ -387,6 +447,7 @@ void	fdf(t_map **map)
 	int		y;
 	int		i;
 	int		j;
+	int		scale;
 
 	mlx_con = mlx_init();
 	if (!mlx_con)
@@ -394,6 +455,7 @@ void	fdf(t_map **map)
 	mlx_win = mlx_new_window(mlx_con, 1000, 1000, "FDF");
 	if (!mlx_win)
 		exit_error();
+	project_map(map);
 	if (map)
 	{
 		i = -1;

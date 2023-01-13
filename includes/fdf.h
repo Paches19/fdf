@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/19 14:20:11 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/01/13 10:53:25 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,12 @@ typedef struct s_map
 	long int	height;
 	long int	color;
 }				t_map;
+
+typedef struct s_map_proj
+{
+	long int	x;
+	long int	y;
+}				t_map_proj;
 
 char	*get_next_line(int fd);
 char	*ft_strjoin_gnl(char *line, char **save_read);
