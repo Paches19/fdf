@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/01/13 11:53:11 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/03 13:30:24 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,13 +99,27 @@ void	ft_free_matrix_tmap(t_map **matrix)
 	matrix = NULL;
 }
 
+void	ft_free_matrix_tmap_proj(t_map_proj **matrix)
+{
+	size_t	i;
+
+	if (!matrix)
+		return ;
+	i = -1;
+	while (matrix[++i])
+	{
+		free(matrix[i]);
+		matrix[i] = NULL;
+	}
+	free(matrix);
+	matrix = NULL;
+}
+
 int	ft_atoi(const char *str)
 {
-	int		i;
 	int		sign;
 	long	result;
 
-	i = 0;
 	sign = 1;
 	while (*str && (*str == 32 || (*str >= 9 && *str <= 13)))
 		++str;
@@ -211,20 +225,11 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (str);
 }
 
-// int	get_size_map(char **argv)
-// {
-// 	int	i;
-
-// 	i = -1;
-// 	return (i);
-// }
-
 char	*read_map(char **argv)
 {
 	int			fd;
 	char		*buf;
 	char		*map;
-	//const int	size_map = get_size_map(argv);
 
 	fd = open(argv[1], O_RDONLY);
 	map = NULL;
@@ -261,7 +266,7 @@ int	ft_num_cols(t_map **map)
 	if (!map || !map[0])
 		return (0);
 	i = -1;
-	while (map[0][++i] <= INT_MAX)
+	while (map[0][++i].height <= INT_MAX)
 		++num_cols;
 	return (num_cols);
 }
@@ -278,6 +283,14 @@ int	ft_size_row(char **row)
 	while (row[++i])
 		++size_row;
 	return (size_row);
+}
+
+void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = img->img_ptr + (y * img->line_len + x * (img->bpp / 8));
+	*(unsigned int *)dst = color;
 }
 
 void	init_new_map(t_map **new_map, t_map **map, char **row)
@@ -398,35 +411,33 @@ t_map_proj	**init_new_map_proj(t_map **map, int num_rows, int num_cols)
 	t_map_proj	**map_proj;
 	int			i;
 
-	map_proj = (t_map **) malloc(sizeof(t_map *) * (num_rows + 1));
-	map_proj[num_rows + 1] = NULL;
+	map_proj = (t_map_proj **) ft_calloc(sizeof(t_map_proj *), num_rows + 1);
+	if (!map_proj)
+		exit_error();
 	i = -1;
 	while (map[++i])
 	{
-		map_proj[i] = (t_map *) ft_calloc(sizeof(t_map) , num_cols + 1);
+		map_proj[i] = (t_map_proj *) ft_calloc(sizeof(t_map_proj), num_cols + 1);
 		if (!map_proj[i])
 		{
-			ft_free_matrix_tmap(map_proj);
+			ft_free_matrix_tmap_proj(map_proj);
 			exit_error();
 		}
-	}
-	if (!map_proj[i])
-	{
-		ft_free_matrix_tmap(map_proj);
-		exit_error();
 	}
 	return (map_proj);
 }
 
-void	project_map(t_map **map, int scale)
+t_map_proj	**project_map(t_map **map)
 {
 	t_map_proj	**map_proj;
 	int			i;
 	int			j;
 	const int	num_rows = ft_num_rows(map);
 	const int	num_cols = ft_num_cols(map);
+	int			scale;
 
-	map_proj = init_new_map_proj(map);
+	scale = 50;
+	map_proj = init_new_map_proj(map, num_rows, num_cols);
 	i = -1;
 	while (++i < num_rows)
 	{
@@ -434,45 +445,118 @@ void	project_map(t_map **map, int scale)
 		while (++j < num_cols)
 		{
 			map_proj[i][j].x = (i - j) * cos(0.523599) * scale;
-			map_proj[i][j].y = ((i - j) * sin(0.523599) - map[i][j]) * scale;
+			map_proj[i][j].y = ((i + j) * sin(0.523599) - \
+			(map[i][j].height / 1.5) ) * scale;
+		}
+		map_proj[i][j].x = (long int) INT_MAX + 1;
+		map_proj[i][j].y = (long int) INT_MAX + 1;
+	}
+	i = -1;
+	while (++i < num_rows)
+	{
+		j = -1;
+		while (++j < num_cols)
+		{
+			printf("%ld", map_proj[i][j].x);
+		}
+		printf("/n");
+	}
+	printf("/n");
+	i = -1;
+	while (++i < num_rows)
+	{
+		j = -1;
+		while (++j < num_cols)
+		{
+			printf("%ld", map_proj[i][j].y);
+		}
+		printf("/n");
+	}
+	return (map_proj);
+}
+
+void	draw_horizontal_line(t_map **map, t_coord coord, t_img *img)
+{
+	int		dx;
+	int		dy;
+	float	step;
+	
+	dx = coord.x2 - coord.x1;
+	dy = coord.y2 - coord.y1;
+	if (absolute(dx) > absolute(dy))
+		step = absolute(dx);
+	else
+		step = absolute(dy);
+	coord.x_inc = dx / step;
+	coord.y_inc = dy / step;
+	while (coord.x1 < coord.x2)
+	{
+		coord.x1 += coord.x_inc;
+		coord.y1 += coord.y_inc;
+		my_mlx_pixel_put(img, coord.x1, coord.y1, map[coord.i][coord.j].color);
+	}
+	
+}
+
+void	calc_horizontal_lines(t_map_proj **map_proj, t_map **map, t_img *img)
+{
+	t_coord	coord;
+
+	//coord = (t_coord *) malloc(sizeof(t_coord));
+	coord.i = -1;
+	while (map_proj[++coord.i + 1])
+	{
+		coord.j = -1;
+		while (map_proj[coord.i][++coord.j].x <= INT_MAX && \
+		map_proj[coord.i][coord.j + 1].x <= INT_MAX)
+		{
+			coord.x1 = map_proj[coord.i][coord.j].x;
+			coord.x2 = map_proj[coord.i][coord.j + 1].x;
+			coord.y1 = map_proj[coord.i][coord.j].y;
+			coord.y2 = map_proj[coord.i][coord.j + 1].y;
+			draw_horizontal_line(map, coord, img);
 		}
 	}
 }
 
 void	fdf(t_map **map)
 {
-	void	*mlx_con;
-	void	*mlx_win;
-	int		x;
-	int		y;
-	int		i;
-	int		j;
-	int		scale;
+	//void	*mlx_con;
+	//void	*mlx_win;
+	//int		x;
+	//int		y;
+	//int		i;
+	//int		j;
+	t_map_proj	**map_proj;
+	t_img		img;
 
-	mlx_con = mlx_init();
-	if (!mlx_con)
-		exit_error();
-	mlx_win = mlx_new_window(mlx_con, 1000, 1000, "FDF");
-	if (!mlx_win)
-		exit_error();
-	project_map(map);
-	if (map)
-	{
-		i = -1;
-		y = 400;
-		while(map[++i])
-		{
-			j = -1;
-			x = 400;
-			while(map[i][++j].height <= INT_MAX)
-				mlx_pixel_put(mlx_con, mlx_win, ++x, y, map[i][j].color);
-			++y;
-		}
-		
-	}
-	mlx_loop(mlx_con);
-	free(mlx_con);
-	free(mlx_win);
+	//mlx_con = mlx_init();
+	//if (!mlx_con)
+	//	exit_error();
+	//mlx_win = mlx_new_window(mlx_con, 1000, 1000, "FDF");
+	//if (!mlx_win)
+	//	exit_error();
+	//img.img = mlx_new_image(mlx_p.mlx, 1000, 1000);
+	//img.ptr = mlx_get_data_addr(img.img, &img.bpp, &img.line_length,
+	//		&img.endian);
+	map_proj = project_map(map);
+	calc_horizontal_lines(map_proj, map, &img);
+	//if (map)
+	//{
+	//	i = -1;
+	//	y = 400;
+	//	while(map[++i])
+	//	{
+			//j = -1;
+	//		x = 400;
+			//while(map[i][++j].height <= INT_MAX)
+			//	mlx_pixel_put(mlx_con, mlx_win, ++x, y, map[i][j].color);
+	//		++y;
+		//}
+	//}
+	//mlx_loop(mlx_con);
+	//free(mlx_con);
+	//free(mlx_win);
 	return ;
 }
 

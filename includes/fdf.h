@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/01/13 10:53:25 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/03 13:13:14 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define FDF_H
 
 # include "unistd.h"
-# include "mlx.h"
-
+//# include "mlx.h"
+# include "math.h"
 # include <unistd.h>
 # include <stdlib.h>
 # include "fcntl.h"
@@ -34,6 +34,15 @@
 #  define BUFFER_SIZE 1000000
 # endif
 
+typedef struct s_img
+{
+	void	*img;
+	char	*img_ptr;
+	int		bpp;
+	int		line_len;
+	int		endian;
+}	t_img;
+
 typedef struct s_map
 {
 	long int	height;
@@ -45,6 +54,18 @@ typedef struct s_map_proj
 	long int	x;
 	long int	y;
 }				t_map_proj;
+
+typedef struct s_coord
+{
+	long int	x1;
+	long int	y1;
+	long int	x2;
+	long int	y2;
+	int			i;
+	int			j;
+	float		x_inc;
+	float		y_inc;
+}				t_coord;
 
 char	*get_next_line(int fd);
 char	*ft_strjoin_gnl(char *line, char **save_read);
