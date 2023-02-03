@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/03 13:30:24 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/03 19:02:52 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -495,20 +495,43 @@ void	draw_horizontal_line(t_map **map, t_coord coord, t_img *img)
 		coord.y1 += coord.y_inc;
 		my_mlx_pixel_put(img, coord.x1, coord.y1, map[coord.i][coord.j].color);
 	}
-	
 }
 
 void	calc_horizontal_lines(t_map_proj **map_proj, t_map **map, t_img *img)
 {
 	t_coord	coord;
 
-	//coord = (t_coord *) malloc(sizeof(t_coord));
 	coord.i = -1;
 	while (map_proj[++coord.i + 1])
 	{
 		coord.j = -1;
 		while (map_proj[coord.i][++coord.j].x <= INT_MAX && \
 		map_proj[coord.i][coord.j + 1].x <= INT_MAX)
+		{
+			coord.x1 = map_proj[coord.i][coord.j].x;
+			coord.x2 = map_proj[coord.i][coord.j + 1].x;
+			coord.y1 = map_proj[coord.i][coord.j].y;
+			coord.y2 = map_proj[coord.i][coord.j + 1].y;
+			draw_horizontal_line(map, coord, img);
+		}
+	}
+}
+
+void	calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img)
+{
+	t_coord			coord;
+	const int		n_col = ft_num_cols(map);
+	int				k;
+	int				l;
+	const int		n_row = ft_num_rows(map);
+
+	k = -1;
+	while (++k < n_col)
+	{
+		coord.j = -1;
+		coord.i = k;
+		l = -1;
+		while (map_proj[coord.i][++coord.j].x <= INT_MAX && ++l < n_row - 1)
 		{
 			coord.x1 = map_proj[coord.i][coord.j].x;
 			coord.x2 = map_proj[coord.i][coord.j + 1].x;
@@ -541,6 +564,7 @@ void	fdf(t_map **map)
 	//		&img.endian);
 	map_proj = project_map(map);
 	calc_horizontal_lines(map_proj, map, &img);
+	calc_vertical_lines(map_proj, map, &img);
 	//if (map)
 	//{
 	//	i = -1;
