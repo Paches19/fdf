@@ -6,7 +6,7 @@
 #    By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/19 11:40:14 by adpachec          #+#    #+#              #
-#    Updated: 2023/02/01 10:39:49 by adpachec         ###   ########.fr        #
+#    Updated: 2023/02/06 16:57:28 by adpachec         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,8 @@ OBJ				= $(SRC:.c=.o)
 OBJS			= $(addprefix $(OBJ_DIR), $(OBJ))
 
 CC				= gcc
-CFLAGS			= -Wall -Wextra -Werror -Imlx
+CFLAGS			= -fsanitize=address -g -Imlx
+# CFLAGS			= -Wall -Wextra -Werror -Imlx
 
 all: $(OBJ_DIR) $(NAME)
 
@@ -32,7 +33,7 @@ $(OBJ_DIR):
 	mkdir $(OBJ_DIR)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
-	$(CC) $(CFLAGS) -I/usr/include -Imlx_linux -O3 -c $< -o $@ -I $(INC_DIR)
+	$(CC) $(CFLAGS) -I/usr/include -Imlx -c $< -o $@ -I $(INC_DIR)
 
 $(NAME): $(OBJS)
 		$(CC) $(CFLAGS) $(OBJS) -lmlx -framework OpenGL \
