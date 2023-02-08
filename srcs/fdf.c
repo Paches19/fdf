@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/07 12:56:14 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/08 11:50:17 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	while (s2[++i])
 		str[len_s1 + i] = s2[i];
 	str[len_s1 + i] = '\0';
+	free(s1);
 	free (s2);
 	return (str);
 }
@@ -483,7 +484,8 @@ t_map_proj	**project_map(t_map **map)
 		while (map[i][++j].height <= INT_MAX)
 		{
 			map_proj[i][j].x = (x - y) * cos(0.523599);
-			map_proj[i][j].y = ((x + y) * sin(0.523599)) - (map[i][j].height);
+			map_proj[i][j].y = ((x + y) * sin(0.523599)) - \
+			((map[i][j].height) * scale / 1.5);
 			x += scale;
 		}
 		y += scale;
@@ -504,7 +506,7 @@ t_map_proj	**project_map(t_map **map)
 	// printf("\n");
 	// printf("\n");
 	// printf("\n");
-	i = -1;
+	/*i = -1;
 	while (map_proj[++i])
 	{
 		j = -1;
@@ -513,7 +515,7 @@ t_map_proj	**project_map(t_map **map)
 			printf("%ld ", map_proj[i][j].y);
 		}
 		printf("\n");
-	}
+	}*/
 	//exit(1);
 	return (map_proj);
 }
@@ -619,8 +621,8 @@ void	calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img)
 
 void	fdf(t_map **map)
 {
-	void	*mlx_con;
-	void	*mlx_win;
+	//void	*mlx_con;
+	//void	*mlx_win;
 	t_map_proj	**map_proj;
 	t_img		img;
 	// int		x;
@@ -628,7 +630,7 @@ void	fdf(t_map **map)
 	int		i;
 	int		j;
 
-	mlx_con = mlx_init();
+	/*mlx_con = mlx_init();
 	if (!mlx_con)
 		exit_error();
 	mlx_win = mlx_new_window(mlx_con, 1000, 1000, "FDF");
@@ -636,7 +638,7 @@ void	fdf(t_map **map)
 		exit_error();
 	img.img = mlx_new_image(mlx_con, 1000, 1000);
 	img.img_ptr = mlx_get_data_addr(img.img, &img.bpp, &img.line_len, \
-	&img.endian);
+	&img.endian);*/
 	map_proj = project_map(map);
 	// i = -1;
 	// while (map_proj[++i])
@@ -646,16 +648,16 @@ void	fdf(t_map **map)
 	// 		printf("%lu ", map_proj[i][j].x);
 	// 	printf("\n");
 	// }
-	i = -1;
+	/*i = -1;
 	while (map_proj[++i])
 	{
 		j = -1;
 		if (map_proj[i][++j].x < 1000 && map_proj[i][j].y < 1000)
 			my_mlx_pixel_put(&img, map_proj[i][j].x,map_proj[i][j].y, map[i][j].color);
-	}
-	calc_horizontal_lines(map_proj, map, &img);
-	calc_vertical_lines(map_proj, map, &img);
-	mlx_put_image_to_window(mlx_con, mlx_win, img.img, 0, 0);
+	}*/
+	//calc_horizontal_lines(map_proj, map, &img);
+	//calc_vertical_lines(map_proj, map, &img);
+	//mlx_put_image_to_window(mlx_con, mlx_win, img.img, 0, 0);
 	//if (map)
 	//{
 	//	i = -1;
@@ -669,9 +671,10 @@ void	fdf(t_map **map)
 	//		++y;
 		//}
 	//}
-	mlx_loop(mlx_con);
-	free(mlx_con);
-	free(mlx_win);
+	//mlx_loop(mlx_con);
+	//free(mlx_con);
+	//free(mlx_win);
+	exit(1);
 	return ;
 }
 

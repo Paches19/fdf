@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/06 12:23:59 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/08 11:40:23 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define FDF_H
 
 # include "unistd.h"
-# include "mlx.h"
+//# include "mlx.h"
 # include "math.h"
 # include <unistd.h>
 # include <stdlib.h>
