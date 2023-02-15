@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/15 12:57:17 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/15 14:51:28 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -453,7 +453,7 @@ t_map_proj	**project_map(t_map **map)
 		{
 			map_proj[i][j].x = (x - y) * cos(0.523599);
 			map_proj[i][j].y = ((x + y) * sin(0.523599)) - \
-			((map[i][j].height) * scale / 1.5);
+			((map[i][j].height) * scale / 3);
 			x += scale;
 		}
 		y += scale;
@@ -738,14 +738,19 @@ void	rescale_coords(t_map_proj **map_proj)
 	min_y = get_min_y(map_proj);
 	max_abs_x = get_max_abs_x(map_proj);
 	max_abs_y = get_max_abs_y(map_proj);
+	int window_size = fmin(1000, 1000);
+	int map_size = fmax(max_x - min_x, max_y - min_y);
+	float scale = (float)window_size / (float)map_size;
+	// if (scale == 0)
+	// 	scale = 100;
 	i = -1;
 	while (map_proj[++i]) 
 	{
 		j = -1;
 		while(map_proj[i][++j].y <= INT_MAX)
 		{
-			map_proj[i][j].x = (map_proj[i][j].x * 200 / (max_abs_x)) + ((max_x - min_x) / 2);
-			map_proj[i][j].y = (map_proj[i][j].y * 200 / (max_abs_y)) + ((max_y - min_y) / 2);
+			map_proj[i][j].x = ((map_proj[i][j].x - min_x) * scale) + ((1024 - (max_x - min_x) * scale) / 2);
+			map_proj[i][j].y = ((map_proj[i][j].y - min_y) * scale) + ((1024 - (max_y - min_y) * scale) / 2);
 		}
     }
 	// i = -1;
