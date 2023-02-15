@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/15 14:51:28 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/15 15:16:06 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,7 +303,7 @@ void	init_new_map(t_map **new_map, t_map **map, char **row)
 	{
 		while (map[++i])
 		{
-			new_map[i] = (t_map *) ft_calloc(sizeof(t_map) , num_cols + 1);
+			new_map[i] = (t_map *) ft_calloc(sizeof(t_map), num_cols + 1);
 			if (!new_map[i])
 			{
 				ft_free_matrix_tmap(new_map);
@@ -334,6 +334,7 @@ void	get_num_color(char **row, t_map **map, t_map **new_map)
 			j = -1;
 			while (map[i][++j].height <= INT_MAX)
 				new_map[i][j].height = map[i][j].height;
+			printf("%d %d\n\n", i, j);
 			new_map[i][j].height = (long) INT_MAX + 1;
 			while (--j >= 0)
 				new_map[i][j].color = map[i][j].color;
@@ -371,7 +372,6 @@ t_map	**num_to_map(char **row, t_map **map)
 t_map	**build_map(char *ch_map)
 {
 	int		i;
-	//int		j;
 	t_map	**map;
 	char	**matrix_map;
 	char	**row;
@@ -385,23 +385,6 @@ t_map	**build_map(char *ch_map)
 		map = num_to_map(row, map);
 		ft_free_matrix_char(row);
 	}
-	// i = -1;
-	// while (map[++i])
-	// {
-	// 	j = -1;
-	// 	while (map[i][++j].height <= INT_MAX)
-	// 		printf("%lu ", map[i][j].height);
-	// 	printf("\n");
-	// }
-	// i = -1;
-	// while (map[++i])
-	// {
-	// 	int r = j;
-	// 	j = -1;
-	// 	while (++j < r)
-	// 		printf("%lu ", map[i][j].color);
-	// 	printf("\n");
-	// }
 	ft_free_matrix_char(matrix_map);
 	return (map);
 }
@@ -453,7 +436,7 @@ t_map_proj	**project_map(t_map **map)
 		{
 			map_proj[i][j].x = (x - y) * cos(0.523599);
 			map_proj[i][j].y = ((x + y) * sin(0.523599)) - \
-			((map[i][j].height) * scale / 3);
+			((map[i][j].height) * scale / 2);
 			x += scale;
 		}
 		y += scale;
@@ -721,17 +704,6 @@ void	rescale_coords(t_map_proj **map_proj)
 	int i;
 	int	j;
 	
-	// i = -1;
-	// while (map_proj[++i])
-	// {
-	// 	j = -1;
-	// 	while (map_proj[i][++j].x <= INT_MAX)
-	// 		printf("%lu ", map_proj[i][j].x);
-	// 	printf("\n");
-	// }
-	// printf("\n");
-	// printf("\n");
-	// printf("\n");
 	max_x = get_max_x(map_proj);
 	max_y = get_max_y(map_proj);
 	min_x = get_min_x(map_proj);
@@ -741,8 +713,8 @@ void	rescale_coords(t_map_proj **map_proj)
 	int window_size = fmin(1000, 1000);
 	int map_size = fmax(max_x - min_x, max_y - min_y);
 	float scale = (float)window_size / (float)map_size;
-	// if (scale == 0)
-	// 	scale = 100;
+	if (scale == 0)
+		scale = 1;
 	i = -1;
 	while (map_proj[++i]) 
 	{
@@ -753,17 +725,6 @@ void	rescale_coords(t_map_proj **map_proj)
 			map_proj[i][j].y = ((map_proj[i][j].y - min_y) * scale) + ((1024 - (max_y - min_y) * scale) / 2);
 		}
     }
-	// i = -1;
-	// while (map_proj[++i])
-	// {
-	// 	j = -1;
-	// 	while (map_proj[i][++j].x <= INT_MAX)
-	// 		printf("%lu ", map_proj[i][j].x);
-	// 	printf("\n");
-	// }
-	// printf("\n");
-	// printf("\n");
-	// printf("\n");
 }
 	
 void	fdf(t_map **map)
@@ -772,10 +733,6 @@ void	fdf(t_map **map)
 	void	*mlx_win;
 	t_map_proj	**map_proj;
 	t_img		img;
-	// int		x;
-	// int		y;
-	// int		i;
-	// int		j;
 
 	mlx_con = mlx_init();
 	if (!mlx_con)
@@ -788,21 +745,6 @@ void	fdf(t_map **map)
 	&img.endian);
 	map_proj = project_map(map);
 	rescale_coords(map_proj);
-	// i = -1;
-	// while (map_proj[++i])
-	// {
-	// 	j = -1;
-	// 	while (map_proj[i][++j].x <= INT_MAX)
-	// 		printf("%ld ", map_proj[i][j].x);
-	// 	printf("\n");
-	// }
-	// i = -1;
-	// while (map_proj[++i])
-	// {
-	// 	j = -1;
-	// 	if (map_proj[i][++j].x <= INT_MAX)
-	// 		my_mlx_pixel_put(&img, map_proj[i][j].x, map_proj[i][j].y, map[i][j].color);
-	// }
 	calc_horizontal_lines(map_proj, map, &img);
 	calc_vertical_lines(map_proj, map, &img);
 	mlx_put_image_to_window(mlx_con, mlx_win, img.img, 0, 0);
@@ -826,7 +768,7 @@ int	main(int argc, char **argv)
 		return (1);
 	ch_map = read_map(argv);
 	map = build_map(ch_map);
-	free (ch_map);
+	free(ch_map);
 	fdf(map);
 	ft_free_matrix_tmap(map);
 	return (0);
