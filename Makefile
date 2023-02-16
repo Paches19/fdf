@@ -6,7 +6,7 @@
 #    By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/19 11:40:14 by adpachec          #+#    #+#              #
-#    Updated: 2023/02/14 10:48:44 by adpachec         ###   ########.fr        #
+#    Updated: 2023/02/16 16:39:03 by adpachec         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ OBJS			= $(addprefix $(OBJ_DIR), $(OBJ))
 
 CC				= gcc
 # CFLAGS			= -fsanitize=address -g
-CFLAGS			= -Wall -Wextra -Werror -fsanitize=address -g -Imlx
+CFLAGS			= -Wall -Wextra -Werror -Imlx
 
 all: $(OBJ_DIR) $(NAME)
 

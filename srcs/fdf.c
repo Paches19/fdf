@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/15 15:16:06 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:23:10 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@ void	exit_error(void)
 	err = errno;
 	perror(strerror(err));
 	exit(err);
+}
+
+void	exit_map_error(void)
+{
+	write(1, "Mapa incorrecto, debe tener el mismo numero de columnas en \
+	en todas las filas\n", 79);
+	exit(1);
 }
 
 int	ft_isdigit(int c)
@@ -232,6 +239,8 @@ char	*read_map(char **argv)
 	char		*map;
 
 	fd = open(argv[1], O_RDONLY);
+	if (fd < 0)
+		exit_error();
 	map = NULL;
 	buf = NULL;
 	while (buf || map == NULL)
@@ -257,16 +266,16 @@ int	ft_num_rows(t_map **map)
 	return (num_rows);
 }
 
-int	ft_num_cols(t_map **map)
+int	ft_num_cols(t_map *map)
 {
 	int	num_cols;
 	int	i;
 
 	num_cols = 0;
-	if (!map || !map[0])
+	if (!map)
 		return (0);
 	i = -1;
-	while (map[0][++i].height <= INT_MAX)
+	while (map[++i].height <= INT_MAX)
 		++num_cols;
 	return (num_cols);
 }
@@ -296,13 +305,15 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, int color)
 void	init_new_map(t_map **new_map, t_map **map, char **row)
 {
 	int			i;
-	const int	num_cols = ft_size_row(row);
+	int			num_cols;
+	const int	new_cols = ft_size_row(row);
 
 	i = -1;
 	if (map)
 	{
 		while (map[++i])
 		{
+			num_cols = ft_num_cols(map[i]);
 			new_map[i] = (t_map *) ft_calloc(sizeof(t_map), num_cols + 1);
 			if (!new_map[i])
 			{
@@ -312,7 +323,7 @@ void	init_new_map(t_map **new_map, t_map **map, char **row)
 		}
 		--i;
 	}
-	new_map[++i] = (t_map *) ft_calloc(sizeof(t_map), num_cols + 1);
+	new_map[++i] = (t_map *) ft_calloc(sizeof(t_map), new_cols + 1);
 	if (!new_map[i])
 	{
 		ft_free_matrix_tmap(new_map);
@@ -320,11 +331,10 @@ void	init_new_map(t_map **new_map, t_map **map, char **row)
 	}
 }
 
-void	get_num_color(char **row, t_map **map, t_map **new_map)
+int	copy_map(t_map **map, t_map **new_map)
 {
-	int			i;
-	int			j;
-	char		**height_color;
+	int i;
+	int	j;
 
 	i = -1;
 	if (map)
@@ -334,13 +344,22 @@ void	get_num_color(char **row, t_map **map, t_map **new_map)
 			j = -1;
 			while (map[i][++j].height <= INT_MAX)
 				new_map[i][j].height = map[i][j].height;
-			printf("%d %d\n\n", i, j);
 			new_map[i][j].height = (long) INT_MAX + 1;
 			while (--j >= 0)
 				new_map[i][j].color = map[i][j].color;
 		}
 		--i;
 	}
+	return (i);
+}
+
+void	get_num_color(char **row, t_map **map, t_map **new_map)
+{
+	int			i;
+	int			j;
+	char		**height_color;
+
+	i = copy_map(map, new_map);
 	j = -1;
 	while (row[++j])
 	{
@@ -377,8 +396,8 @@ t_map	**build_map(char *ch_map)
 	char	**row;
 
 	matrix_map = ft_split(ch_map, '\n');
-	i = -1;
 	map = NULL;
+	i = -1;
 	while (matrix_map[++i])
 	{
 		row = ft_split(matrix_map[i], ' ');
@@ -393,7 +412,7 @@ t_map_proj	**init_new_map_proj(t_map **map)
 {
 	t_map_proj	**map_proj;
 	const int	num_rows = ft_num_rows(map);
-	const int	num_cols = ft_num_cols(map);
+	int			num_cols;
 	int			i;
 
 	map_proj = (t_map_proj **) ft_calloc(sizeof(t_map_proj *), num_rows + 1);
@@ -402,6 +421,7 @@ t_map_proj	**init_new_map_proj(t_map **map)
 	i = -1;
 	while (map[++i])
 	{
+		num_cols = ft_num_cols(map[i]);
 		map_proj[i] = (t_map_proj *) ft_calloc(sizeof(t_map_proj), \
 		num_cols + 1);
 		if (!map_proj[i])
@@ -416,58 +436,31 @@ t_map_proj	**init_new_map_proj(t_map **map)
 t_map_proj	**project_map(t_map **map)
 {
 	t_map_proj	**map_proj;
-	int			i;
-	int			j;
+	t_coord		c;
 	int			scale;
-	int			x;
-	int			y;
+	int			num_cols;
 	const int	num_rows = ft_num_rows(map);
-	const int	num_cols = ft_num_cols(map);
 
-	scale = 50;
+	scale = 100;
 	map_proj = init_new_map_proj(map);
-	i = -1;
-	y = 500 - ((num_rows * scale) / 2);
-	while (map[++i])
+	c.i = -1;
+	c.y1 = 500 - ((num_rows * scale) / 2);
+	while (map[++c.i])
 	{
-		j = -1;
-		x = 500 - ((num_cols * scale) / 2);
-		while (map[i][++j].height <= INT_MAX)
+		num_cols = ft_num_cols(map[c.i]);
+		c.j = -1;
+		c.x1 = 500 - ((num_cols * scale) / 2);
+		while (map[c.i][++c.j].height <= INT_MAX)
 		{
-			map_proj[i][j].x = (x - y) * cos(0.523599);
-			map_proj[i][j].y = ((x + y) * sin(0.523599)) - \
-			((map[i][j].height) * scale / 2);
-			x += scale;
+			map_proj[c.i][c.j].x = (c.x1 - c.y1) * cos(0.523599);
+			map_proj[c.i][c.j].y = ((c.x1 + c.y1) * sin(0.523599)) - \
+			((scale * (map[c.i][c.j].height)) / 4);
+			c.x1 += scale;
 		}
-		y += scale;
-		map_proj[i][j].x = (long int) INT_MAX + 1;
-		map_proj[i][j].y = (long int) INT_MAX + 1;
+		c.y1 += scale;
+		map_proj[c.i][c.j].x = (long int) INT_MAX + 1;
+		map_proj[c.i][c.j].y = (long int) INT_MAX + 1;
 	}
-	// i = -1;
-	// while (map_proj[++i])
-	// {
-	// 	j = -1;
-	// 	while (map_proj[i][++j].x <= INT_MAX)
-	// 	{
-	// 		printf("%ld ", map_proj[i][j].x);
-	// 	}
-	// 	printf("\n");
-	// }
-	// printf("\n");
-	// printf("\n");
-	// printf("\n");
-	// printf("\n");
-	// i = -1;
-	// while (map_proj[++i])
-	// {
-	// 	j = -1;
-	// 	while (map_proj[i][++j].y <= INT_MAX)
-	// 	{
-	// 		printf("%ld ", map_proj[i][j].y);
-	// 	}
-	// 	printf("\n");
-	// }
-	// exit(1);
 	return (map_proj);
 }
 
@@ -490,8 +483,6 @@ void	calc_incr_step(t_coord *coord)
 void	draw_horizontal_line(t_map **map, t_coord coord, t_img *img)
 {
 	calc_incr_step(&coord);
-	// printf("%.0f ", coord.x1);
-	// printf("%.0f ", coord.y1);
 	while (coord.x1 < coord.x2)
 	{
 		coord.x1 += coord.x_inc;
@@ -509,19 +500,15 @@ void	draw_vertical_line(t_map **map, t_coord coord, t_img *img)
 		{
 			coord.x1 += coord.x_inc;
 			coord.y1 += coord.y_inc;
-			// printf("i: %d", coord.i);
-			// printf("j: %d", coord.j);
 			my_mlx_pixel_put(img, coord.x1, coord.y1, map[coord.i][coord.j].color);
 		}
 	}
 	else
 	{
-		while (coord.y1 > coord.y2)
+		while (coord.y1 > coord.y2) 
 		{
 			coord.x1 += coord.x_inc;
 			coord.y1 += coord.y_inc;
-			// printf("i: %d", coord.i);
-			// printf("j: %d", coord.j);
 			my_mlx_pixel_put(img, coord.x1, coord.y1, map[coord.i][coord.j].color);
 		}
 	}
@@ -535,9 +522,8 @@ void	calc_horizontal_lines(t_map_proj **map_proj, t_map **map, t_img *img)
 	while (map_proj[++coord.i])
 	{
 		coord.j = -1;
-		// while (map_proj[coord.i][++coord.j].x <= INT_MAX && \
-		// map_proj[coord.i][coord.j + 1].x <= INT_MAX)
-		while (map_proj[coord.i][++coord.j + 1].x <= INT_MAX)
+		while (map_proj[coord.i][++coord.j].x <= INT_MAX && \
+		map_proj[coord.i][coord.j + 1].x <= INT_MAX)
 		{
 			coord.x1 = map_proj[coord.i][coord.j].x;
 			coord.x2 = map_proj[coord.i][coord.j + 1].x;
@@ -551,26 +537,27 @@ void	calc_horizontal_lines(t_map_proj **map_proj, t_map **map, t_img *img)
 void	calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img)
 {
 	t_coord			coord;
-	const int		n_col = ft_num_cols(map);
 	const int		n_row = ft_num_rows(map);
-	int				iter;
 
 	coord.i = -1;
-	while (++coord.i < n_row - 1)
+	while (++coord.i + 1 < n_row)
 	{
 		coord.j = -1;
-		iter = -1;
-		while (map_proj[coord.i][++coord.j].x <= INT_MAX && ++iter < n_col)
+		coord.iter = -1;
+		coord.iter2 = -1;
+		coord.n_col = ft_num_cols(map[coord.i]);
+		coord.n_col2 = ft_num_cols(map[coord.i + 1]);
+		while (map_proj[coord.i][++coord.j].x <= INT_MAX && \
+		++coord.iter < coord.n_col && ++coord.iter2 < coord.n_col2)
 		{
 			coord.x1 = map_proj[coord.i][coord.j].x;
 			coord.x2 = map_proj[coord.i + 1][coord.j].x;
 			coord.y1 = map_proj[coord.i][coord.j].y;
 			coord.y2 = map_proj[coord.i + 1][coord.j].y;
-			// printf("i: %d", coord.i);
-			// printf("j: %d", coord.j);
 			draw_vertical_line(map, coord, img);
 		}
 	}
+	free(map_proj);
 }
 
 int	get_max_x(t_map_proj **map_proj)
@@ -695,24 +682,19 @@ int	get_max_abs_y(t_map_proj **map_proj)
 
 void	rescale_coords(t_map_proj **map_proj)
 {
-	int max_x;
-	int max_y;
-	int	min_x;
-	int	min_y;
-	int	max_abs_x;
-	int	max_abs_y;
-	int i;
-	int	j;
+	t_aux	aux;
+	int		map_size;
+	int 	i;
+	int		j;
 	
-	max_x = get_max_x(map_proj);
-	max_y = get_max_y(map_proj);
-	min_x = get_min_x(map_proj);
-	min_y = get_min_y(map_proj);
-	max_abs_x = get_max_abs_x(map_proj);
-	max_abs_y = get_max_abs_y(map_proj);
-	int window_size = fmin(1000, 1000);
-	int map_size = fmax(max_x - min_x, max_y - min_y);
-	float scale = (float)window_size / (float)map_size;
+	aux.max_x = get_max_x(map_proj);
+	aux.max_y = get_max_y(map_proj);
+	aux.min_x = get_min_x(map_proj);
+	aux.min_y = get_min_y(map_proj);
+	aux.max_abs_x = get_max_abs_x(map_proj);
+	aux.max_abs_y = get_max_abs_y(map_proj);
+	map_size = fmax(aux.max_x - aux.min_x, aux.max_y - aux.min_y);
+	float scale = 950 / (float)map_size;
 	if (scale == 0)
 		scale = 1;
 	i = -1;
@@ -721,40 +703,51 @@ void	rescale_coords(t_map_proj **map_proj)
 		j = -1;
 		while(map_proj[i][++j].y <= INT_MAX)
 		{
-			map_proj[i][j].x = ((map_proj[i][j].x - min_x) * scale) + ((1024 - (max_x - min_x) * scale) / 2);
-			map_proj[i][j].y = ((map_proj[i][j].y - min_y) * scale) + ((1024 - (max_y - min_y) * scale) / 2);
+			map_proj[i][j].x = ((map_proj[i][j].x - aux.min_x) * scale) + \
+			((1024 - (aux.max_x - aux.min_x) * scale) / 2);
+			map_proj[i][j].y = ((map_proj[i][j].y - aux.min_y) * scale) + \
+			((1024 - (aux.max_y - aux.min_y) * scale) / 2);
 		}
     }
 }
-	
+
+int	ft_close(t_minilibx *mlx)
+{
+	mlx_destroy_window(mlx->mlx, mlx->mlx_win);
+	exit (0);
+	return (0);
+}
+
+int	key_hook(int keycode)
+{
+	if (keycode == 53)
+		exit(0);
+	return (0);
+}
+
 void	fdf(t_map **map)
 {
-	void	*mlx_con;
-	void	*mlx_win;
+	t_minilibx	mlx;
 	t_map_proj	**map_proj;
 	t_img		img;
 
-	mlx_con = mlx_init();
-	if (!mlx_con)
+	mlx.mlx = mlx_init();
+	if (!mlx.mlx)
 		exit_error();
-	mlx_win = mlx_new_window(mlx_con, 1024, 1024, "FDF");
-	if (!mlx_win)
+	mlx.mlx_win = mlx_new_window(mlx.mlx, 1024, 1024, "FDF");
+	if (!mlx.mlx_win)
 		exit_error();
-	img.img = mlx_new_image(mlx_con, 1024, 1024);
+	img.img = mlx_new_image(mlx.mlx, 1024, 1024);
 	img.img_ptr = mlx_get_data_addr(img.img, &img.bpp, &img.line_len, \
 	&img.endian);
 	map_proj = project_map(map);
 	rescale_coords(map_proj);
 	calc_horizontal_lines(map_proj, map, &img);
 	calc_vertical_lines(map_proj, map, &img);
-	mlx_put_image_to_window(mlx_con, mlx_win, img.img, 0, 0);
-	free(map_proj);
-	free(img.img);
-	free(img.img_ptr);
-	mlx_loop(mlx_con);
-	free(mlx_con);
-	free(mlx_win);
-	//exit(1);
+	mlx_put_image_to_window(mlx.mlx, mlx.mlx_win, img.img, 0, 0);
+	mlx_hook(mlx.mlx_win, 3, 0, key_hook, mlx.mlx);
+	mlx_hook(mlx.mlx_win, 17, 0, ft_close, &mlx);
+	mlx_loop(mlx.mlx);
 	return ;
 }
 
@@ -763,10 +756,10 @@ int	main(int argc, char **argv)
 	t_map	**map;
 	char	*ch_map;
 
-	//system("leaks -q a.out");
+	//system("leaks -q fdf");
 	if (argc != 2)
 		return (1);
-	ch_map = read_map(argv);
+	ch_map = read_map(argv);  
 	map = build_map(ch_map);
 	free(ch_map);
 	fdf(map);

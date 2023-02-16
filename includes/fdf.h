@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/14 11:37:51 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:22:46 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,12 @@
 # include "unistd.h"
 # include "mlx.h"
 # include "math.h"
-# include <unistd.h>
 # include <stdlib.h>
 # include "fcntl.h"
 # include "stdio.h"
 # include "limits.h"
 # include "errno.h"
 # include <string.h>
-# include <sys/wait.h>
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
@@ -65,8 +63,28 @@ typedef struct s_coord
 	int		j;
 	float	x_inc;
 	float	y_inc;
+	int		iter;
+	int		iter2;
+	int		n_col;
+	int		n_col2;
 }			t_coord;
 
+typedef struct s_aux
+{
+	int max_x;
+	int max_y;
+	int	min_x;
+	int	min_y;
+	int	max_abs_x;
+	int	max_abs_y;
+}		t_aux;
+
+typedef struct s_minilibx
+{
+	void	*mlx;
+	void	*mlx_win;
+}			t_minilibx;
+	
 char	*get_next_line(int fd);
 char	*ft_strjoin_gnl(char *line, char **save_read);
 char	*ft_memcpy_gnl(char *dst, char *src);
