@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/16 17:22:46 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/20 17:09:40 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ typedef struct s_coord
 
 typedef struct s_aux
 {
-	int max_x;
-	int max_y;
+	int	max_x;
+	int	max_y;
 	int	min_x;
 	int	min_y;
 	int	max_abs_x;
@@ -83,8 +83,9 @@ typedef struct s_minilibx
 {
 	void	*mlx;
 	void	*mlx_win;
+	t_img	img;
 }			t_minilibx;
-	
+
 char	*get_next_line(int fd);
 char	*ft_strjoin_gnl(char *line, char **save_read);
 char	*ft_memcpy_gnl(char *dst, char *src);
