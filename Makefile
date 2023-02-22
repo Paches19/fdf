@@ -6,7 +6,7 @@
 #    By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/19 11:40:14 by adpachec          #+#    #+#              #
-#    Updated: 2023/02/16 16:39:03 by adpachec         ###   ########.fr        #
+#    Updated: 2023/02/21 15:49:38 by adpachec         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,10 @@ SRC_DIR			= srcs/
 INC_DIR			= ./include/
 OBJ_DIR			= obj/
 
-SRC				= fdf.c ft_split.c get_next_line.c get_next_line_utils.c
+SRC				= fdf.c ft_split.c get_next_line.c get_next_line_utils.c \
+					draw_lines.c error_management.c fdf_utils.c fdf_utils2.c \
+					get_max_min.c get_size.c read_map.c read_map2.c \
+					rescale_coord.c
 
 SRCS			= $(addprefix $(SRC_DIR), $(SRC))
 

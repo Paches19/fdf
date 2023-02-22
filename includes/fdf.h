@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/20 17:09:40 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/21 15:55:39 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,16 +86,45 @@ typedef struct s_minilibx
 	t_img	img;
 }			t_minilibx;
 
-char	*get_next_line(int fd);
-char	*ft_strjoin_gnl(char *line, char **save_read);
-char	*ft_memcpy_gnl(char *dst, char *src);
-int		ft_strchr_gnl(char *s, int c);
-size_t	ft_strlen_gnl(char *s, int gnl);
-char	*ft_calloc_gnl(size_t count, size_t size);
-char	*write_line(char *line, char **save_read);
-char	**ft_split(char *s, char c);
-void	*ft_calloc(size_t count, size_t size);
-void	ft_bzero(void *s, size_t n);
-size_t	ft_strlen(const char *s);
+char		*get_next_line(int fd);
+char		*ft_strjoin_gnl(char *line, char **save_read);
+char		*ft_memcpy_gnl(char *dst, char *src);
+int			ft_strchr_gnl(char *s, int c);
+size_t		ft_strlen_gnl(char *s, int gnl);
+char		*ft_calloc_gnl(size_t count, size_t size);
+char		*write_line(char *line, char **save_read);
+char		**ft_split(char *s, char c);
+void		*ft_calloc(size_t count, size_t size);
+void		ft_bzero(void *s, size_t n);
+size_t		ft_strlen(const char *s);
+void		my_mlx_pixel_put(t_img *img, int x, int y, int color);
+void		draw_horizontal_line(t_map **map, t_coord coord, t_img *img);
+void		draw_vertical_line(t_map **map, t_coord coord, t_img *img);
+void		calc_horizontal_lines(t_map_proj **map_proj, t_map **map, t_img *img);
+void		calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img);
+void		check_color(char *color);
+void		exit_error_hexa(void);
+void		exit_error(void);
+void		exit_map_error(void);
+char		*ft_strjoin(char *s1, char *s2);
+void		*ft_calloc(size_t count, size_t size);
+void		ft_bzero(void *s, size_t n);
+int			ft_isdigit(int c);
+int			ft_atoi(const char *str);
+long int	ft_htol(char *color, long int height);
+size_t		ft_strlen(const char *s);
+void		ft_free_matrix_char(char **matrix);
+void		ft_free_matrix_tmap(t_map **matrix);
+void		ft_free_matrix_tmap_proj(t_map_proj **matrix);
+int			get_min_x(t_map_proj **map_proj);
+int			get_min_y(t_map_proj **map_proj);
+int			get_max_abs_x(t_map_proj **map_proj);
+int			get_max_abs_y(t_map_proj **map_proj);
+void		get_max_min(t_aux *aux, t_map_proj **map_proj);
+int			ft_num_rows(t_map **map);
+int			ft_num_cols(t_map *map);
+int			ft_size_row(char **row);
+int			copy_map(t_map **map, t_map **new_map);
+
 
 #endif
