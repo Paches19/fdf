@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:39:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/22 16:04:13 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 17:09:33 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ t_map_proj	**project_map(t_map **map)
 		while (map[c.i][++c.j].height <= INT_MAX)
 		{
 			map_p[c.i][c.j].x = (c.x1 - c.y1) * sqrt(3 / 2);
-			map_p[c.i][c.j].y = ((c.x1 + c.y1) * 0.5) - (100 * \
-			map[c.i][c.j].height / 8);
+			map_p[c.i][c.j].y = ((c.x1 + c.y1) * 0.5) - (5 * \
+			map[c.i][c.j].height);
 			c.x1 += scale;
 		}
 		c.y1 += scale;
