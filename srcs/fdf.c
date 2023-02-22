@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/22 16:12:56 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 19:21:58 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	fdf(t_map **map)
 	img.img_ptr = mlx_get_data_addr(img.img, &img.bpp, &img.line_len, \
 	&img.endian);
 	mlx.img = img;
-	map_proj = project_map(map);
+	map_proj = project_map(map, &mlx);
 	rescale_coords(map_proj);
 	calc_horizontal_lines(map_proj, map, &img);
 	calc_vertical_lines(map_proj, map, &img);

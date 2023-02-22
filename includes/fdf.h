@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/22 16:11:40 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 19:20:53 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int			ft_num_rows(t_map **map);
 int			ft_num_cols(t_map *map);
 int			ft_size_row(char **row);
 int			copy_map(t_map **map, t_map **new_map);
-t_map_proj	**project_map(t_map **map);
+t_map_proj	**project_map(t_map **map, t_minilibx *mlx);
 void		rescale_coords(t_map_proj **map_proj);
 char		*read_map(char **argv);
 t_map		**build_map(char *ch_map);

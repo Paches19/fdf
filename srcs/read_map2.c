@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:39:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/22 17:09:33 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 19:24:45 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,30 @@ int	get_max_h(t_map **map)
 	return (4);
 }
 
-t_map_proj	**project_map(t_map **map)
+int	key_adjust(int keycode, void *height_scale)
+{
+	int *var = (int *) height_scale;
+
+	// if (keycode == 0x1e)
+	keycode = 0;
+		*var += 10;
+	// else if (keycode == 0x1b)
+	// 	*var -= 10;
+	printf("hs2: %d", *var);
+	return (0);
+}
+
+t_map_proj	**project_map(t_map **map, t_minilibx *mlx)
 {
 	t_map_proj	**map_p;
 	t_coord		c;
-	const int	scale = 50;
+	const int	scale = 300;
 	int			num_cols;
+	int			height_scale;
 
+	height_scale = 500;
+	mlx_key_hook(mlx->mlx_win, key_adjust, &height_scale);
+	printf("hs3: %d", height_scale);
 	map_p = init_new_map_proj(map);
 	c.i = -1;
 	c.y1 = 500 - ((ft_num_rows(map) * scale) / 2);
@@ -79,7 +96,7 @@ t_map_proj	**project_map(t_map **map)
 		while (map[c.i][++c.j].height <= INT_MAX)
 		{
 			map_p[c.i][c.j].x = (c.x1 - c.y1) * sqrt(3 / 2);
-			map_p[c.i][c.j].y = ((c.x1 + c.y1) * 0.5) - (5 * \
+			map_p[c.i][c.j].y = ((c.x1 + c.y1) * 0.5) - (height_scale * \
 			map[c.i][c.j].height);
 			c.x1 += scale;
 		}
