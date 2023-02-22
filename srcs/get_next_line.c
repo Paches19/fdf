@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:53:24 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/19 11:47:56 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 16:11:53 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ ssize_t *read_len)
 	if (!(*save_read) || (*save_read)[0] == '\0')
 	{
 		free (*save_read);
-		*save_read = (char *) ft_calloc_gnl(sizeof(char) * (BUFFER_SIZE + 1), 1);
+		*save_read = (char *) ft_calloc_gnl(sizeof(char) * \
+		(BUFFER_SIZE + 1), 1);
 		if (!*save_read)
 			return (NULL);
 		*read_len = read(fd, *save_read, BUFFER_SIZE);

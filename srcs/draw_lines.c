@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:45:00 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/21 15:50:37 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 15:53:21 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img)
 		coord.iter2 = -1;
 		coord.n_col = ft_num_cols(map[coord.i]);
 		coord.n_col2 = ft_num_cols(map[coord.i + 1]);
-		while (map_proj[coord.i][++coord.j].x <= INT_MAX && \
+		while (map_proj[coord.i + 1][++coord.j].x <= INT_MAX && \
 		++coord.iter < coord.n_col && ++coord.iter2 < coord.n_col2)
 		{
 			coord.x1 = map_proj[coord.i][coord.j].x;

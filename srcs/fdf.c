@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/22 10:32:58 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 16:12:56 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,17 +66,11 @@ void	fdf(t_map **map)
 	return ;
 }
 
-void    ft_leaks(void)
-{
-    system("leaks fdf");
-}
-
 int	main(int argc, char **argv)
 {
 	t_map	**map;
 	char	*ch_map;
 
-	atexit(ft_leaks);
 	if (argc != 2)
 		return (1);
 	ch_map = read_map(argv);

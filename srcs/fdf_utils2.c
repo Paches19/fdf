@@ -6,20 +6,21 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:38:04 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/21 15:38:41 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 16:00:22 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-long int	ft_htol(char *color, long int height)
+long int	ft_htol(char *color)
 {
 	int			i;
 	int			base;
 	long int	result;
-	
+	const char	*white = "0xFFEEFD";
+
 	if (!color)
-		color = create_color(height);
+		color = (char *) white;
 	check_color(color);
 	i = ft_strlen(color) - 1;
 	result = 0;
@@ -95,4 +96,3 @@ void	ft_free_matrix_tmap_proj(t_map_proj **matrix)
 	free(matrix);
 	matrix = NULL;
 }
-

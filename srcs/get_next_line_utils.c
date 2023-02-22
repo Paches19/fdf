@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:54:09 by adpachec          #+#    #+#             */
-/*   Updated: 2022/12/19 11:45:29 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 16:12:07 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,8 @@ char	*ft_strjoin_gnl(char *line, char **save_read)
 	const size_t	len_line = ft_strlen_gnl(line, 0);
 	const size_t	len_save_read = ft_strlen_gnl(*save_read, 1);
 
-	str = (char *) ft_calloc_gnl(1, sizeof(char) * (len_line + len_save_read + 2));
+	str = (char *) ft_calloc_gnl(1, sizeof(char) * (len_line + \
+	len_save_read + 2));
 	if (!str)
 		return (NULL);
 	i = -1;

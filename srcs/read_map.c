@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:38:56 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/21 15:39:49 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 15:56:23 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	copy_map(t_map **map, t_map **new_map)
 {
-	int i;
+	int	i;
 	int	j;
 
 	i = -1;
@@ -63,20 +63,6 @@ void	init_new_map(t_map **new_map, t_map **map, char **row)
 	}
 }
 
-char	*create_color(long int height)
-{
-	const char	*white = "0xFFEEFD";
-	const char	*red = "0xFF0088";
-	const char	*blue = "0x00DDFF";
-
-	if (height >= 4)
-		return ((char *) red);
-	else if (height <= -4)
-		return ((char *) blue);
-	else
-		return ((char *) white);
-}
-
 char	*read_map(char **argv)
 {
 	int			fd;
@@ -96,6 +82,7 @@ char	*read_map(char **argv)
 	close(fd);
 	return (map);
 }
+
 t_map	**build_map(char *ch_map)
 {
 	int		i;

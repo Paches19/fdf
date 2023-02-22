@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:39:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/21 15:42:55 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 16:04:13 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,31 +37,35 @@ t_map_proj	**init_new_map_proj(t_map **map)
 	return (map_proj);
 }
 
-int	get_h(t_map **map, int x, int y)
+int	get_max_h(t_map **map)
 {
-	int			i;
-	int			j;
+	int	i;
+	int	j;
+	int	max_height;
 
 	i = -1;
+	max_height = INT_MIN;
 	while (map[++i])
 	{
 		j = -1;
 		while (map[i][++j].height <= INT_MAX)
 		{
-			if (map[i][j].height > 4)
-				return (100 * map[x][y].height / 4);
-			if (map[i][j].height > 8)
-				return (100 * map[x][y].height / 2);
+			if (map[i][j].height > max_height)
+				max_height = map[i][j].height;
 		}
-	}	
-	return (100 * map[x][y].height / 8);
+	}
+	if (max_height > 20)
+		return (8);
+	else if (max_height > 5)
+		return (6);
+	return (4);
 }
 
 t_map_proj	**project_map(t_map **map)
 {
 	t_map_proj	**map_p;
 	t_coord		c;
-	const int	scale = 100;
+	const int	scale = 50;
 	int			num_cols;
 
 	map_p = init_new_map_proj(map);
@@ -74,8 +78,9 @@ t_map_proj	**project_map(t_map **map)
 		c.x1 = 500 - ((num_cols * scale) / 2);
 		while (map[c.i][++c.j].height <= INT_MAX)
 		{
-			map_p[c.i][c.j].x = (c.x1 - c.y1) * 0.866;
-			map_p[c.i][c.j].y = ((c.x1 + c.y1) * 0.5) - get_h(map, c.i, c.j);
+			map_p[c.i][c.j].x = (c.x1 - c.y1) * sqrt(3 / 2);
+			map_p[c.i][c.j].y = ((c.x1 + c.y1) * 0.5) - (100 * \
+			map[c.i][c.j].height / 8);
 			c.x1 += scale;
 		}
 		c.y1 += scale;
@@ -97,8 +102,7 @@ void	get_num_color(char **row, t_map **map, t_map **new_map)
 	{
 		height_color = ft_split(row[j], ',');
 		new_map[i + 1][j].height = (long) ft_atoi(height_color[0]);
-		new_map[i + 1][j].color = (long) ft_htol(height_color[1], \
-		new_map[i + 1][j].height);
+		new_map[i + 1][j].color = (long) ft_htol(height_color[1]);
 		ft_free_matrix_char(height_color);
 	}
 	new_map[i + 1][j].height = (long) INT_MAX + 1;

@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/21 15:55:39 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 16:11:40 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,8 @@ size_t		ft_strlen(const char *s);
 void		my_mlx_pixel_put(t_img *img, int x, int y, int color);
 void		draw_horizontal_line(t_map **map, t_coord coord, t_img *img);
 void		draw_vertical_line(t_map **map, t_coord coord, t_img *img);
-void		calc_horizontal_lines(t_map_proj **map_proj, t_map **map, t_img *img);
+void		calc_horizontal_lines(t_map_proj **map_proj, t_map **map, \
+			t_img *img);
 void		calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img);
 void		check_color(char *color);
 void		exit_error_hexa(void);
@@ -111,7 +112,7 @@ void		*ft_calloc(size_t count, size_t size);
 void		ft_bzero(void *s, size_t n);
 int			ft_isdigit(int c);
 int			ft_atoi(const char *str);
-long int	ft_htol(char *color, long int height);
+long int	ft_htol(char *color);
 size_t		ft_strlen(const char *s);
 void		ft_free_matrix_char(char **matrix);
 void		ft_free_matrix_tmap(t_map **matrix);
@@ -125,6 +126,14 @@ int			ft_num_rows(t_map **map);
 int			ft_num_cols(t_map *map);
 int			ft_size_row(char **row);
 int			copy_map(t_map **map, t_map **new_map);
-
+t_map_proj	**project_map(t_map **map);
+void		rescale_coords(t_map_proj **map_proj);
+char		*read_map(char **argv);
+t_map		**build_map(char *ch_map);
+char		*create_color(long int height);
+int			get_max_y(t_map_proj **map_proj);
+int			get_max_x(t_map_proj **map_proj);
+t_map		**num_to_map(char **row, t_map **map);
+void		init_new_map(t_map **new_map, t_map **map, char **row);
 
 #endif
