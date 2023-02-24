@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:45:00 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 11:50:36 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 12:18:30 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,5 +108,4 @@ void	calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img)
 		}
 	}
 	ft_free_matrix_tmap_proj(map_proj);
-	//ft_free_matrix_tmap(map);
 }

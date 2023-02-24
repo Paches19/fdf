@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 11:36:11 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 12:18:10 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,5 +142,8 @@ int			get_max_y(t_map_proj **map_proj);
 int			get_max_x(t_map_proj **map_proj);
 t_map		**num_to_map(char **row, t_map **map);
 void		init_new_map(t_map **new_map, t_map **map, char **row);
+int			key_adjust(int keycode, t_megastruct *megastruct);
+int			esc_hook(int keycode, t_minilibx *mlx);
+int			ft_close(t_minilibx *mlx);
 
 #endif
