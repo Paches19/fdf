@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 13:32:49 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 13:33:20 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 13:45:08 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,21 @@
 char	*get_color(long int height)
 {
 	const char	*white = "0xFFEEFD";
-	const char	*blue1 = "0x3D7FC9";
-	const char	*blue2 = "0x2E5AA3";
-	const char	*blue3 = "0x1B3F75";
-	const char	*blue4 = "0x0C1C3F";
+	const char	*yellow = "0xF1C40F";
+	const char	*green = "0x2ECC71";
+	const char	*blue = "0x3498DB";
+	const char	*purple = "0x9B59B6";
 
 	if (height < 1)
-		return ((char *) blue1);
-	else if (height < 2)
-		return ((char *) white);
-	else if (height < 5)
-		return ((char *) blue2);
-	else if (height < 10)
-		return ((char *) blue4);
+		return ((char *) purple);
+	else if (height <= 3)
+		return ((char *) blue);
+	else if (height <= 5)
+		return ((char *) green);
+	else if (height <= 10)
+		return ((char *) yellow);
 	else
-		return ((char *) blue3);
+		return ((char *) white);
 }
 
 long int	gradient_color_hor(long int color0, long int color1, t_coord coord)
