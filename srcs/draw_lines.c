@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:45:00 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 12:18:30 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 13:33:17 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,25 +31,29 @@ static void	calc_incr_step(t_coord *coord)
 void	draw_horizontal_line(t_map **map, t_coord coord, t_img *img)
 {
 	calc_incr_step(&coord);
+	coord.x0 = coord.x1;
 	while (coord.x1 < coord.x2)
 	{
 		coord.x1 += coord.x_inc;
 		coord.y1 += coord.y_inc;
-		my_mlx_pixel_put(img, coord.x1, coord.y1, map[coord.i][coord.j].color);
+		my_mlx_pixel_put(img, coord.x1, coord.y1, gradient_color_hor(\
+		map[coord.i][coord.j].color, map[coord.i][coord.j + 1].color, coord));
 	}
 }
 
 void	draw_vertical_line(t_map **map, t_coord coord, t_img *img)
 {
 	calc_incr_step(&coord);
+	coord.y0 = coord.y1;
 	if (coord.y2 > coord.y1)
 	{
 		while (coord.y1 < coord.y2)
 		{
 			coord.x1 += coord.x_inc;
 			coord.y1 += coord.y_inc;
-			my_mlx_pixel_put(img, coord.x1, coord.y1, \
-			map[coord.i][coord.j].color);
+			my_mlx_pixel_put(img, coord.x1, coord.y1, gradient_color_ver(\
+			map[coord.i][coord.j].color, map[coord.i + 1][coord.j].color, \
+			coord));
 		}
 	}
 	else
@@ -58,8 +62,9 @@ void	draw_vertical_line(t_map **map, t_coord coord, t_img *img)
 		{
 			coord.x1 += coord.x_inc;
 			coord.y1 += coord.y_inc;
-			my_mlx_pixel_put(img, coord.x1, coord.y1, \
-			map[coord.i][coord.j].color);
+			my_mlx_pixel_put(img, coord.x1, coord.y1, gradient_color_ver(\
+			map[coord.i][coord.j].color, map[coord.i + 1][coord.j].color, \
+			coord));
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 12:18:10 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 13:33:52 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,9 @@ typedef struct s_map_proj
 
 typedef struct s_coord
 {
+	float	x0;
 	float	x1;
+	float	y0;
 	float	y1;
 	float	x2;
 	float	y2;
@@ -119,7 +121,7 @@ void		*ft_calloc(size_t count, size_t size);
 void		ft_bzero(void *s, size_t n);
 int			ft_isdigit(int c);
 int			ft_atoi(const char *str);
-long int	ft_htol(char *color);
+long int	ft_htol(char *color, long int height);
 size_t		ft_strlen(const char *s);
 void		ft_free_matrix_char(char **matrix);
 void		ft_free_matrix_tmap(t_map **matrix);
@@ -145,5 +147,8 @@ void		init_new_map(t_map **new_map, t_map **map, char **row);
 int			key_adjust(int keycode, t_megastruct *megastruct);
 int			esc_hook(int keycode, t_minilibx *mlx);
 int			ft_close(t_minilibx *mlx);
+long int	gradient_color_ver(long int color0, long int color1, t_coord coord);
+long int	gradient_color_hor(long int color0, long int color1, t_coord coord);
+char		*get_color(long int height);
 
 #endif

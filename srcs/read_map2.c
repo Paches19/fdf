@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:39:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 12:03:33 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 12:50:29 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,8 @@ void	get_num_color(char **row, t_map **map, t_map **new_map)
 	{
 		height_color = ft_split(row[j], ',');
 		new_map[i + 1][j].height = (long) ft_atoi(height_color[0]);
-		new_map[i + 1][j].color = (long) ft_htol(height_color[1]);
+		new_map[i + 1][j].color = (long) ft_htol(height_color[1], \
+		new_map[i + 1][j].height);
 		ft_free_matrix_char(height_color);
 	}
 	new_map[i + 1][j].height = (long) INT_MAX + 1;
