@@ -6,28 +6,25 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:39:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 12:50:29 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 16:29:41 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-t_map_proj	**init_new_map_proj(t_map **map)
+t_map_proj	**init_new_map_proj(t_map_size map_size)
 {
 	t_map_proj	**map_proj;
-	const int	num_rows = ft_num_rows(map);
-	int			num_cols;
 	int			i;
-
-	map_proj = (t_map_proj **) ft_calloc(sizeof(t_map_proj *), num_rows + 1);
+		
+	map_proj = (t_map_proj **) ft_calloc(sizeof(t_map_proj *), map_size.n_rows);
 	if (!map_proj)
 		exit_error();
 	i = -1;
-	while (map[++i])
+	while (++i < map_size.n_rows - 1)
 	{
-		num_cols = ft_num_cols(map[i]);
 		map_proj[i] = (t_map_proj *) ft_calloc(sizeof(t_map_proj), \
-		num_cols + 1);
+		map_size.n_cols + 1);
 		if (!map_proj[i])
 		{
 			ft_free_matrix_tmap_proj(map_proj);
@@ -61,22 +58,20 @@ int	get_max_h(t_map **map)
 	return (4);
 }
 
-t_map_proj	**project_map(t_map **map, int height_scale)
+t_map_proj	**project_map(t_map **map, int height_scale, t_map_size map_size)
 {
 	t_map_proj	**map_p;
 	t_coord		c;
 	const int	scale = 5000;
-	int			num_cols;
 
-	map_p = init_new_map_proj(map);
+	map_p = init_new_map_proj(map_size);
 	c.i = -1;
-	c.y1 = 500 - ((ft_num_rows(map) * scale) / 2);
+	c.y1 = 500 - (map_size.n_rows * scale) / 2;
 	while (map[++c.i])
 	{
-		num_cols = ft_num_cols(map[c.i]);
 		c.j = -1;
-		c.x1 = 500 - ((num_cols * scale) / 2);
-		while (map[c.i][++c.j].height <= INT_MAX)
+		c.x1 = 500 - ((map_size.n_cols * scale) / 2);
+		while (++c.j < map_size.n_cols)
 		{
 			map_p[c.i][c.j].x = (c.x1 - c.y1) * sqrt(3 / 2);
 			map_p[c.i][c.j].y = ((c.x1 + c.y1) * 0.5) - (height_scale * \
@@ -90,37 +85,37 @@ t_map_proj	**project_map(t_map **map, int height_scale)
 	return (map_p);
 }
 
-void	get_num_color(char **row, t_map **map, t_map **new_map)
-{
-	int			i;
-	int			j;
-	char		**height_color;
+// void	get_num_color(char **row, t_map **map, t_map **new_map)
+// {
+// 	int			i;
+// 	int			j;
+// 	char		**height_color;
 
-	i = copy_map(map, new_map);
-	j = -1;
-	while (row[++j])
-	{
-		height_color = ft_split(row[j], ',');
-		new_map[i + 1][j].height = (long) ft_atoi(height_color[0]);
-		new_map[i + 1][j].color = (long) ft_htol(height_color[1], \
-		new_map[i + 1][j].height);
-		ft_free_matrix_char(height_color);
-	}
-	new_map[i + 1][j].height = (long) INT_MAX + 1;
-	new_map[i + 1][j].color = (long) INT_MAX + 1;
-}
+// 	i = copy_map(map, new_map);
+// 	j = -1;
+// 	while (row[++j])
+// 	{
+// 		height_color = ft_split(row[j], ',');
+// 		new_map[i + 1][j].height = (long) ft_atoi(height_color[0]);
+// 		new_map[i + 1][j].color = (long) ft_htol(height_color[1], \
+// 		new_map[i + 1][j].height);
+// 		ft_free_matrix_char(height_color);
+// 	}
+// 	new_map[i + 1][j].height = (long) INT_MAX + 1;
+// 	new_map[i + 1][j].color = (long) INT_MAX + 1;
+// }
 
-t_map	**num_to_map(char **row, t_map **map)
-{
-	t_map		**new_map;
-	const int	num_rows = ft_num_rows(map);
+// t_map	**num_to_map(char **row, t_map **map)
+// {
+// 	t_map		**new_map;
+// 	const int	num_rows = ft_num_rows(map);
 
-	new_map = (t_map **) malloc(sizeof(t_map *) * (num_rows + 1 + 1));
-	new_map[num_rows + 1] = NULL;
-	if (!new_map)
-		exit_error();
-	init_new_map(new_map, map, row);
-	get_num_color(row, map, new_map);
-	ft_free_matrix_tmap(map);
-	return (new_map);
-}
+// 	new_map = (t_map **) malloc(sizeof(t_map *) * (num_rows + 1 + 1));
+// 	new_map[num_rows + 1] = NULL;
+// 	if (!new_map)
+// 		exit_error();
+// 	init_new_map(new_map, map, row);
+// 	get_num_color(row, map, new_map);
+// 	ft_free_matrix_tmap(map);
+// 	return (new_map);
+// }

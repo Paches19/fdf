@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:45:00 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 13:33:17 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 16:33:09 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,16 +69,16 @@ void	draw_vertical_line(t_map **map, t_coord coord, t_img *img)
 	}
 }
 
-void	calc_horizontal_lines(t_map_proj **map_proj, t_map **map, t_img *img)
+void	calc_horizontal_lines(t_map_proj **map_proj, t_map **map, t_img *img, \
+t_map_size map_size)
 {
 	t_coord	coord;
 
 	coord.i = -1;
-	while (map_proj[++coord.i])
+	while (++coord.i < map_size.n_rows - 1)
 	{
 		coord.j = -1;
-		while (map_proj[coord.i][++coord.j].x <= INT_MAX && \
-		map_proj[coord.i][coord.j + 1].x <= INT_MAX)
+		while (++coord.j < map_size.n_cols - 1)
 		{
 			coord.x1 = map_proj[coord.i][coord.j].x;
 			coord.x2 = map_proj[coord.i][coord.j + 1].x;
@@ -89,7 +89,8 @@ void	calc_horizontal_lines(t_map_proj **map_proj, t_map **map, t_img *img)
 	}
 }
 
-void	calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img)
+void	calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img, \
+t_map_size map_size)
 {
 	t_coord			coord;
 	const int		n_row = ft_num_rows(map);
@@ -100,10 +101,8 @@ void	calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img)
 		coord.j = -1;
 		coord.iter = -1;
 		coord.iter2 = -1;
-		coord.n_col = ft_num_cols(map[coord.i]);
-		coord.n_col2 = ft_num_cols(map[coord.i + 1]);
 		while (map_proj[coord.i + 1][++coord.j].x <= INT_MAX && \
-		++coord.iter < coord.n_col && ++coord.iter2 < coord.n_col2)
+		++coord.iter < map_size.n_cols)
 		{
 			coord.x1 = map_proj[coord.i][coord.j].x;
 			coord.x2 = map_proj[coord.i + 1][coord.j].x;

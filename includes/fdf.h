@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 13:33:52 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 16:46:27 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,12 @@ typedef struct s_megastruct
 	t_map		**map;
 }				t_megastruct;
 
+typedef struct s_map_size
+{
+	long int	n_cols;
+	long int	n_rows;	
+}				t_map_size;
+
 char		*get_next_line(int fd);
 char		*ft_strjoin_gnl(char *line, char **save_read);
 char		*ft_memcpy_gnl(char *dst, char *src);
@@ -110,8 +116,9 @@ void		my_mlx_pixel_put(t_img *img, int x, int y, int color);
 void		draw_horizontal_line(t_map **map, t_coord coord, t_img *img);
 void		draw_vertical_line(t_map **map, t_coord coord, t_img *img);
 void		calc_horizontal_lines(t_map_proj **map_proj, t_map **map, \
-			t_img *img);
-void		calc_vertical_lines(t_map_proj **map_proj, t_map **map, t_img *img);
+			t_img *img, t_map_size map_size);
+void		calc_vertical_lines(t_map_proj **map_proj, t_map **map, \
+			t_img *img, t_map_size map_size);
 void		check_color(char *color);
 void		exit_error_hexa(void);
 void		exit_error(void);
@@ -132,10 +139,10 @@ int			get_max_abs_x(t_map_proj **map_proj);
 int			get_max_abs_y(t_map_proj **map_proj);
 void		get_max_min(t_aux *aux, t_map_proj **map_proj);
 int			ft_num_rows(t_map **map);
-int			ft_num_cols(t_map *map);
+int			ft_num_cols(t_map *map, t_map_size map_size);
 int			ft_size_row(char **row);
 int			copy_map(t_map **map, t_map **new_map);
-t_map_proj	**project_map(t_map **map, int height_scale);
+t_map_proj	**project_map(t_map **map, int height_scale, t_map_size map_size);
 void		rescale_coords(t_map_proj **map_proj);
 char		*read_map(char **argv);
 t_map		**build_map(char *ch_map);
@@ -150,5 +157,10 @@ int			ft_close(t_minilibx *mlx);
 long int	gradient_color_ver(long int color0, long int color1, t_coord coord);
 long int	gradient_color_hor(long int color0, long int color1, t_coord coord);
 char		*get_color(long int height);
+size_t		ft_words(char *s, char c);
+t_map_size	size_map(char **argv);
+t_map		**init_fast_map(t_map_size map_size);
+void		get_num_color(char **row, t_map ***map, int i);
+t_map		**build_map_2(char **argv, t_map_size *map_size);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 13:35:37 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 16:36:27 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	init_megastruct(t_map **map, t_minilibx *mlx, t_megastruct *mega_struct)
 	mega_struct->map[0]->height_scale = 200;
 }
 
-void	fdf(t_map **map)
+void	fdf(t_map **map, t_map_size map_size)
 {
 	t_minilibx		mlx;
 	t_map_proj		**map_proj;
@@ -45,10 +45,11 @@ void	fdf(t_map **map)
 	&mlx.img.line_len, &mlx.img.endian);
 	init_megastruct(map, &mlx, &mega_struct);
 	mlx_hook(mlx.mlx_win, 2, 0, key_adjust, &mega_struct);
-	map_proj = project_map(map, map[0]->height_scale);
+	map[0]->height_scale = 200;
+	map_proj = project_map(map, map[0]->height_scale, map_size);
 	rescale_coords(map_proj);
-	calc_horizontal_lines(map_proj, map, &mlx.img);
-	calc_vertical_lines(map_proj, map, &mlx.img);
+	calc_horizontal_lines(map_proj, map, &mlx.img, map_size);
+	calc_vertical_lines(map_proj, map, &mlx.img, map_size);
 	mlx_put_image_to_window(mlx.mlx, mlx.mlx_win, mlx.img.img, 0, 0);
 	mlx_hook(mlx.mlx_win, 3, 0, esc_hook, &mlx);
 	mlx_hook(mlx.mlx_win, 17, 0, ft_close, &mlx);
@@ -58,16 +59,26 @@ void	fdf(t_map **map)
 
 int	main(int argc, char **argv)
 {
-	t_map	**map;
-	char	*ch_map;
+	t_map		**map;
+	t_map_size map_size;
+	//char	*ch_map;
 
 	if (argc != 2)
 		return (1);
-	ch_map = read_map(argv);
-	map = build_map(ch_map);
-	free(ch_map);
-	while (1)
-		fdf(map);
+	//ch_map = read_map(argv);
+	map = build_map_2(argv, &map_size);
+	//build_map(ch_map);
+	//free(ch_map);
+	int i = -1;
+	while (map[++i])
+	{
+		int j = -1;
+		while (++j < map_size.n_cols)
+			printf("%ld ", map[i][j].height);
+		printf("\n");
+	}
+	exit (0);
+	fdf(map, map_size);
 	ft_free_matrix_tmap(map);
 	return (0);
 }

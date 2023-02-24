@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:43:10 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/21 15:43:28 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 16:11:43 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,19 @@ int	ft_num_rows(t_map **map)
 	return (num_rows);
 }
 
-int	ft_num_cols(t_map *map)
-{
-	int	num_cols;
-	int	i;
+// int	ft_num_cols(t_map *map)
+// {
+// 	int	num_cols;
+// 	int	i;
 
-	num_cols = 0;
-	if (!map)
-		return (0);
-	i = -1;
-	while (map[++i].height <= INT_MAX)
-		++num_cols;
-	return (num_cols);
-}
+// 	if (!map)
+// 		return (0);
+// 	num_cols = 0;
+// 	i = -1;
+// 	while (map[++i].height <= INT_MAX)
+// 		++num_cols;
+// 	return (num_cols);
+// }
 
 int	ft_size_row(char **row)
 {

@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 12:54:45 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/06 14:57:55 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 15:07:18 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (str);
 }
 
-static size_t	ft_words(char *s, char c)
+size_t	ft_words(char *s, char c)
 {
 	size_t	i;
 	size_t	words;
