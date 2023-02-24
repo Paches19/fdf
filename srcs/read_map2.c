@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:39:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/22 19:24:45 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/24 12:03:33 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,30 +61,13 @@ int	get_max_h(t_map **map)
 	return (4);
 }
 
-int	key_adjust(int keycode, void *height_scale)
-{
-	int *var = (int *) height_scale;
-
-	// if (keycode == 0x1e)
-	keycode = 0;
-		*var += 10;
-	// else if (keycode == 0x1b)
-	// 	*var -= 10;
-	printf("hs2: %d", *var);
-	return (0);
-}
-
-t_map_proj	**project_map(t_map **map, t_minilibx *mlx)
+t_map_proj	**project_map(t_map **map, int height_scale)
 {
 	t_map_proj	**map_p;
 	t_coord		c;
-	const int	scale = 300;
+	const int	scale = 5000;
 	int			num_cols;
-	int			height_scale;
 
-	height_scale = 500;
-	mlx_key_hook(mlx->mlx_win, key_adjust, &height_scale);
-	printf("hs3: %d", height_scale);
 	map_p = init_new_map_proj(map);
 	c.i = -1;
 	c.y1 = 500 - ((ft_num_rows(map) * scale) / 2);
