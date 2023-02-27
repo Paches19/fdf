@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:54 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 16:46:27 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/27 19:29:03 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,12 @@ typedef struct s_img
 	int		line_len;
 	int		endian;
 }	t_img;
+
+typedef struct s_map_size
+{
+	long int	n_cols;
+	long int	n_rows;	
+}				t_map_size;
 
 typedef struct s_map
 {
@@ -93,13 +99,8 @@ typedef struct s_megastruct
 {
 	t_minilibx	*mlx;
 	t_map		**map;
+	t_map_size	map_size;
 }				t_megastruct;
-
-typedef struct s_map_size
-{
-	long int	n_cols;
-	long int	n_rows;	
-}				t_map_size;
 
 char		*get_next_line(int fd);
 char		*ft_strjoin_gnl(char *line, char **save_read);

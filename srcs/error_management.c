@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:34:13 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/21 15:37:31 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/27 20:03:13 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	check_color(char *color)
 	i = 1;
 	while (color[++i])
 	{
+		//printf("ci %c\n",color[i]);
 		if (color[i] < '0' || (color[i] > '9' && color[i] < 'A'))
 			exit_error_hexa();
 		if ((color[i] > 'F' && color[i] < 'a') || color[i] > 'f')

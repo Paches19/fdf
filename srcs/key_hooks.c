@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 12:15:33 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 12:19:37 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/27 19:28:35 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ int	key_adjust(int keycode, t_megastruct *megastruct)
 	megastruct->mlx->img.img_ptr = mlx_get_data_addr(megastruct->mlx->img.img, \
 	&megastruct->mlx->img.bpp, \
 	&megastruct->mlx->img.line_len, &megastruct->mlx->img.endian);
-	map_proj = project_map(megastruct->map, megastruct->map[0]->height_scale);
+	map_proj = project_map(megastruct->map, megastruct->map[0]->height_scale, megastruct->map_size);
 	rescale_coords(map_proj);
-	calc_horizontal_lines(map_proj, megastruct->map, &megastruct->mlx->img);
-	calc_vertical_lines(map_proj, megastruct->map, &megastruct->mlx->img);
+	calc_horizontal_lines(map_proj, megastruct->map, &megastruct->mlx->img, megastruct->map_size);
+	calc_vertical_lines(map_proj, megastruct->map, &megastruct->mlx->img, megastruct->map_size);
 	mlx_put_image_to_window(megastruct->mlx->mlx, megastruct->mlx->mlx_win, \
 	megastruct->mlx->img.img, 0, 0);
 	return (0);

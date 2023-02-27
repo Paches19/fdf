@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:53:24 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/22 16:11:53 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/27 20:08:13 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,20 @@ static char	*read_fd(int fd, char *line)
 char	*get_next_line(int fd)
 {
 	char	*line;
+	int		i;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = NULL;
 	line = read_fd(fd, line);
+	if (line)
+	{
+		i = -1;
+		while (line[++i] != '\0')
+		{
+			if (line[i] == '\n')
+				line[i] = '\0';
+		}
+	}
 	return (line);
 }

@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:38:56 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/24 16:46:03 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/27 20:03:25 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,9 +145,9 @@ void	get_num_color(char **row, t_map ***map, int i)
 	while (row[++j])
 	{
 		height_color = ft_split(row[j], ',');
-		(*map)[i][j].height = (long) ft_atoi(height_color[0]);
-		(*map)[i][j].color = (long) ft_htol(height_color[1], \
-		(*map)[i][j].height);
+		map[0][i][j].height = (long) ft_atoi(height_color[0]);
+		map[0][i][j].color = (long) ft_htol(height_color[1], \
+		map[0][i][j].height);
 		ft_free_matrix_char(height_color);
 	}
 	map[0][i][j].height = (long) INT_MAX + 1;
@@ -168,23 +168,13 @@ t_map	**build_map_2(char **argv, t_map_size *map_size)
 	map = init_fast_map(map_size[0]);
 	coord.i = -1;
 	row = NULL;
-	while (row || coord.i++ == -1)
+	while (row || coord.i == -1)
 	{
 		row = ft_split(get_next_line(fd), ' ');
-		get_num_color(row, &map, coord.i);
+		get_num_color(row, &map, ++coord.i);
 		if (row)
 			ft_free_matrix_char(row);
 	}
-	int i = -1;
-	while (map[++i])
-	{
-		int j = -1;
-		while (++j < map_size->n_cols)
-			printf("%ld ", map[i][j].height);
-		printf("\n");
-	}
-	printf("\n");printf("\n");
-	//exit (0);
 	return (map);
 }
 
