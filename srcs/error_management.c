@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:34:13 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/27 20:03:13 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/28 16:49:39 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	exit_error(void)
 
 void	exit_map_error(void)
 {
-	write(1, "Mapa incorrecto, debe tener el mismo numero de columnas en \
-	en todas las filas\n", 79);
+	write(1, "Mapa incorrecto, debe tener el mismo numero de columnas \
+	en todas las filas\n", 75);
 	exit(1);
 }

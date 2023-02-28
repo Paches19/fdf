@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:38:56 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/27 20:03:25 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/28 16:49:07 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ t_map_size	size_map(char **argv)
 		if (buf && ft_words(buf, ' ') != (unsigned long) map_size.n_cols)
 		{
 			free(buf);
-			exit (0);
+			exit_map_error();
 		}
 		++map_size.n_rows;
 	}

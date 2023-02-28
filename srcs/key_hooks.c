@@ -6,26 +6,28 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 12:15:33 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/27 19:28:35 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/28 17:05:08 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-int	ft_close(t_minilibx *mlx)
+int	ft_close(t_megastruct *megastruct)
 {
-	mlx_destroy_image(mlx->mlx, mlx->img.img);
-	mlx_destroy_window(mlx->mlx, mlx->mlx_win);
+	mlx_destroy_image(megastruct->mlx->mlx, megastruct->mlx->img.img);
+	mlx_destroy_window(megastruct->mlx->mlx, megastruct->mlx->mlx_win);
+	ft_free_matrix_tmap(megastruct->map);
 	exit (0);
 	return (0);
 }
 
-int	esc_hook(int keycode, t_minilibx *mlx)
+int	esc_hook(int keycode, t_megastruct *megastruct)
 {
 	if (keycode == 53)
 	{
-		mlx_destroy_image(mlx->mlx, mlx->img.img);
-		mlx_destroy_window(mlx->mlx, mlx->mlx_win);
+		mlx_destroy_image(megastruct->mlx->mlx, megastruct->mlx->img.img);
+		mlx_destroy_window(megastruct->mlx->mlx, megastruct->mlx->mlx_win);
+		ft_free_matrix_tmap(megastruct->map);
 		exit(0);
 	}
 	return (0);

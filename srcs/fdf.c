@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/14 11:37:57 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/27 19:33:06 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/28 17:03:08 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ void	fdf(t_map **map, t_map_size map_size)
 	calc_horizontal_lines(map_proj, map, &mlx.img, map_size);
 	calc_vertical_lines(map_proj, map, &mlx.img, map_size);
 	mlx_put_image_to_window(mlx.mlx, mlx.mlx_win, mlx.img.img, 0, 0);
-	mlx_hook(mlx.mlx_win, 3, 0, esc_hook, &mlx);
-	mlx_hook(mlx.mlx_win, 17, 0, ft_close, &mlx);
+	mlx_hook(mlx.mlx_win, 3, 0, esc_hook, &mega_struct);
+	mlx_hook(mlx.mlx_win, 17, 0, ft_close, &mega_struct);
 	mlx_loop(mlx.mlx);
 	return ;
 }
@@ -71,6 +71,5 @@ int	main(int argc, char **argv)
 	//build_map(ch_map);
 	//free(ch_map);
 	fdf(map, map_size);
-	ft_free_matrix_tmap(map);
 	return (0);
 }
